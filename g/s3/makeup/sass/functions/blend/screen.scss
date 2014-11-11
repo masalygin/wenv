@@ -1,0 +1,10 @@
+@function blend-screen ($foreground, $background) {
+  $bm-red: blend-screen-color(red($foreground), red($background));
+  $bm-green: blend-screen-color(green($foreground), green($background));
+  $bm-blue: blend-screen-color(blue($foreground), blue($background));
+
+  @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
+}
+@function blend-screen-color($foreground, $background) {
+  @return (255 - ( ( (255 - $foreground) * (255 - $background)) / 256));
+}

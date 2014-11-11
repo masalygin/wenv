@@ -1,0 +1,6 @@
+@mixin background-multiple ($images, $ie_fix:$fix) {
+    background: $images;
+    @if ($ie_fix == pie) and $experimental-support-for-pie and $legacy-support-for-ie8 {
+        -pie-background: $images;
+    }
+}

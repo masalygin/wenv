@@ -1,0 +1,16 @@
+@function blend-hardlight ($foreground, $background) {
+  $bm-red: blend-hardlight-color(red($foreground), red($background));
+  $bm-green: blend-hardlight-color(green($foreground), green($background));
+  $bm-blue: blend-hardlight-color(blue($foreground), blue($background));
+
+  @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
+}
+@function blend-hardlight-color($foreground, $background) {
+  $tmp-blend: $foreground;
+  @if $tmp-blend < 128 {
+    $foreground: $background * $tmp-blend * (2 / 255);
+  } @else {
+    $foreground: 255 - (255-$background) * (255-$tmp-blend) * (2 / 255);
+  }
+  @return $foreground;
+}

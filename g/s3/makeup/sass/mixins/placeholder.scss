@@ -1,0 +1,7 @@
+@mixin placeholder {
+    @if $experimental-support-for-webkit {&::-webkit-input-placeholder {@content;}}
+    @if $experimental-support-for-mozilla {&:moz-placeholder {@content;}}
+    @if $experimental-support-for-mozilla {&::-moz-placeholder {@content;}}
+    @if $experimental-support-for-microsoft {&:-ms-input-placeholder {@content;}}
+    @if $legacy-support-for-ie and $legacy-support-for-ie8 {&.placeholder {@content;}}
+}

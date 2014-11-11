@@ -1,0 +1,15 @@
+@function blend-softlight ($foreground, $background) {
+    $bm-red: blend-softlight-color(red($foreground), red($background));
+    $bm-green: blend-softlight-color(green($foreground), green($background));
+    $bm-blue: blend-softlight-color(blue($foreground), blue($background));
+
+    @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
+}
+@function blend-softlight-color($foreground, $background) {
+    @if $background < 128 {
+        $foreground: (($foreground / 2) + 64) * $background * (2 / 255);
+    } @else {
+        $foreground: 255 - (191 - ($foreground / 2)) * (255 - $background) * (2 / 255);
+    }
+    @return $foreground;
+}

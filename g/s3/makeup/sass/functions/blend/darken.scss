@@ -1,0 +1,13 @@
+@function blend-darken ($foreground, $background) {
+  $bm-red: blend-darken-color(red($foreground), red($background));
+  $bm-green: blend-darken-color(green($foreground), green($background));
+  $bm-blue: blend-darken-color(blue($foreground), blue($background));
+
+  @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
+}
+@function blend-darken-color($foreground, $background) {
+  @if $background < $foreground {
+    $foreground: $background;
+  }
+  @return $foreground;
+}

@@ -1,0 +1,6 @@
+@function blend-dissolve ($foreground, $background) {
+  // The Dissolve blend mode acts on transparent and partially transparent pixels
+  // it treats transparency as a pixel pattern and applies a diffusion dither pattern.
+  // @see http://photoblogstop.com/photoshop/photoshop-blend-modes-explained
+  @return $foreground;
+}

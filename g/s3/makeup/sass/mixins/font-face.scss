@@ -1,0 +1,44 @@
+@mixin font-face($name, $file, $weight: normal, $style: normal, $eot: true, $woff: true, $ttf: true, $svg: true, $font_path: $font_path, $icon: false) {
+    @font-face {
+		$eot_s: '';
+		$woff_s: '';
+		$ttf_s: '';
+		$svg_s: '';
+        font-family: quote($name);
+        @if $eot {
+            src: url("#{$font_path}#{$file}.eot");
+            $eot_s: 'url("#{$font_path}#{$file}.eot?#iefix") format("embedded-opentype"),'
+        }
+        @if $woff {
+            $woff_s: 'url("#{$font_path}#{$file}.woff") format("woff"),'
+        }
+        @if $ttf {
+            $ttf_s: 'url("#{$font_path}#{$file}.ttf") format("truetype"),'
+        }
+        @if $svg {
+            $svg_s: 'url("#{$font_path}#{$file}.svg##{$name}") format("svg")'
+        }
+        src: unquote($eot_s) unquote($woff_s) unquote($ttf_s) unquote($svg_s);
+        @if $weight {
+            font-weight: $weight;
+        }
+        @if $style {
+            font-style: $style;
+        }
+    }
+
+    @if $icon and $svg {
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            @font-face {
+                font-family: quote($name);
+                src: url("#{$font_path}#{$file}.svg") format("svg");
+            @if $weight {
+                    font-weight: $weight;
+                }
+                @if $style {
+                    font-style: $style;
+                }
+            }
+        }
+    }
+}

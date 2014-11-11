@@ -1,0 +1,10 @@
+@function blend-exclusion ($foreground, $background) {
+  $bm-red: blend-exclusion-color(red($foreground), red($background));
+  $bm-green: blend-exclusion-color(green($foreground), green($background));
+  $bm-blue: blend-exclusion-color(blue($foreground), blue($background));
+
+  @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
+}
+@function blend-exclusion-color($foreground, $background) {
+  @return $background - ($background * (2 / 255) - 1) * $foreground;
+}

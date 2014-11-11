@@ -1,0 +1,8 @@
+@mixin lt-ie ($ver) {
+    @if ($legacy-support-for-ie8 == false) and ($ver <= 9) {$ver: false;}
+    @if $ver and $legacy-support-for-ie {
+        .lt-ie#{$ver} & {
+            @content;
+        }
+    }
+}

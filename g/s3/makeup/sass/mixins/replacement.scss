@@ -1,0 +1,7 @@
+@mixin replacement ($image, $width, $height: $width) {
+    background: $image no-repeat;
+    height: 0;
+    width: $width;
+    padding-top: $height;
+    overflow: hidden;
+}

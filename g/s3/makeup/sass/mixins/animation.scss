@@ -1,0 +1,6 @@
+@mixin animation ($argument) {
+    @if $experimental-support-for-webkit {-webkit-animation: $argument;}
+    @if $experimental-support-for-mozilla {-moz-animation: $argument;}
+    @if $experimental-support-for-opera {-o-animation: $argument;}
+    animation: $argument;
+}

@@ -1,0 +1,13 @@
+@function blend-lighten ($foreground, $background) {
+  $bm-red: blend-lighten-color(red($foreground), red($background));
+  $bm-green: blend-lighten-color(green($foreground), green($background));
+  $bm-blue: blend-lighten-color(blue($foreground), blue($background));
+
+  @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
+}
+@function blend-lighten-color($foreground, $background) {
+  @if $background > $foreground {
+    $foreground: $background;
+  }
+  @return $foreground;
+}

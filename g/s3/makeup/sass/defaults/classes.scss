@@ -1,0 +1,40 @@
+@mixin reset-indents {
+    padding: 0;
+    margin: 0;
+}
+
+@mixin reset-font {
+    line-height: 0;
+    font-size: 0;
+}
+
+@mixin reset-table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    vertical-align: top;
+    @include reset-indents;
+    @include reset-border;
+}
+
+@mixin clear-list {
+    list-style: none;
+    @include reset-indents;
+}
+
+@mixin clearfix {
+    &:before, &:after {
+        display: table;
+        content: "";
+        @include reset-font;
+    }
+
+    &:after {
+        clear: both;
+    }
+}
+
+@mixin pie {
+    @if $fix == pie {
+        behavior: url(#{$pie_path});
+    }
+}

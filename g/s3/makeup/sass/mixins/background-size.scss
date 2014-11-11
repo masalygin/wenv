@@ -1,0 +1,6 @@
+@mixin background-size ($value) {
+    @if $experimental-support-for-webkit {-webkit-background-size: $value;}
+    @if $experimental-support-for-mozilla {-moz-background-size: $value;}
+    @if $experimental-support-for-opera {-o-background-size: $value;}
+    background-size: $value;
+}

@@ -1,0 +1,50 @@
+@mixin triangle ($color, $direction, $width: null, $height: $width) {
+    @if (type_of($direction) == string) and (type_of($color) == color) {
+        @if ($width) {
+            width: 0;
+            height: 0;
+            border-color: transparent;
+            border-style: solid;
+            $b_w: $width/2;
+            $b_h: $height/2;
+        }
+        @if ($direction == up) or ($direction == down) {
+            @if ($direction == up) {
+                @if ($width) {border-width: 0 $b_w $height $b_w;}
+                border-bottom-color: $color;
+            }
+            @else if ($direction == down) {
+                @if ($width) {border-width: $height $b_w 0 $b_w;}
+                border-top-color: $color;
+            }
+        }
+        @else if ($direction == left) or ($direction == right){
+            @if ($direction == left) {
+                @if ($width) {border-width: $b_h $width $b_h 0;}
+                border-right-color: $color;
+            }
+            @else if ($direction == right) {
+                @if ($width) {border-width: $b_h 0 $b_h $width;}
+                border-left-color: $color;
+            }
+        }
+        @else if ($direction == up-right) or ($direction == up-left) {
+            @if ($direction == up-right and $width) {
+                border-width: $height 0 0 $width;
+            }
+            @else if (($direction == up-left) and $width) {
+                border-width: $height $width 0 0;
+            }
+            border-top-color: $color;
+        }
+        @else if ($direction == down-right) or ($direction == down-left) {
+            @if ($direction == down-right and $width) {
+                border-width: 0 0 $height $width;
+            }
+            @else if ($direction == down-left and $width) {
+                border-width: 0 $width $height 0;
+            }
+            border-bottom-color: $color;
+        }
+    }
+}

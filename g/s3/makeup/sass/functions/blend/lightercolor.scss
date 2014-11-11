@@ -1,0 +1,15 @@
+@function blend-lightercolor ($foreground, $background) {
+  $bm-red: red($foreground);
+  $bm-green: green($foreground);
+  $bm-blue: blue($foreground);
+  $background-red: red($background);
+  $background-green: green($background);
+  $background-blue: blue($background);
+
+  @if $background-red * 0.3 + $background-green * 0.59 + $background-blue * 0.11 > $bm-red * 0.3 + $bm-green * 0.59 + $bm-blue * 0.11 {
+    $bm-red: $background-red;
+    $bm-green: $background-green;
+    $bm-blue: $background-blue;
+  }
+  @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
+}

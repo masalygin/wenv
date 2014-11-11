@@ -1,0 +1,10 @@
+@mixin background-rgba ($color, $ie_fix: $fix) {    
+    background-color: $color;
+    @if ($ie_fix == pie) and $legacy-support-for-ie8 and $experimental-support-for-pie {
+        -pie-background: $color;
+    }
+    @else if ($ie_fix == filter) and $legacy-support-for-ie8 {
+        $ie_a: ie_hex_str($color);
+        -ms-filter: "progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr='#{$ie_a}', EndColorStr='#{$ie_a}')";
+    }
+}

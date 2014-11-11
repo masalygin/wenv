@@ -1,0 +1,12 @@
+@mixin border-image ($image) {
+    @if $experimental-support-for-mozilla {
+        -moz-border-image: $image;
+    }
+    @if $experimental-support-for-webkit {
+        -webkit-border-image: $image;
+    }
+    @if $experimental-support-for-opera {
+        -o-border-image: $image;
+    }
+    border-image: $image;
+}

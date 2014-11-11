@@ -1,0 +1,92 @@
+@mixin text-shadow-base-styles {
+    @if $legacy-support-for-ie8 {
+        .ui-text-shadow, .ui-text-shadow-original {
+            position: relative;
+        }
+        .ui-text-shadow-original {
+            z-index: 1;
+            text-shadow: none;
+        }
+        .ui-text-shadow-copy {
+            position: absolute;
+            z-index: 0;
+            line-height: 110.74235%;
+            left: 0;
+            top: 0;
+            text-shadow: none;
+            color: transparent;
+            visibility: hidden;
+        }
+    }
+}
+
+@mixin text-shadow ($shadow-1, $shadow-2: null, $shadow-3: null, $shadow-4: null, $shadow-5: null, $shadow-6: null, $shadow-7: null, $shadow-8: null, $shadow-9: null, $shadow-10: null) {
+
+    $shadows: $shadow-10; $shadow-10: $shadow-9; $shadow-9: $shadow-8; $shadow-8: $shadow-7; $shadow-7: $shadow-6; $shadow-6: $shadow-5; $shadow-5: $shadow-4; $shadow-4: $shadow-3; $shadow-3: $shadow-2; $shadow-2: $shadow-1; $shadow-1: null;
+
+    $shadows: $shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10;
+
+    @if $experimental-support-for-mozilla {-moz-text-shadow: $shadows;}
+    @if $experimental-support-for-webkit {-webkit-text-shadow: $shadows;}
+    text-shadow: $shadows;
+
+    @if $legacy-support-for-ie {
+        $i: 1;
+        @each $shadow in $shadows {
+            @if $shadow {
+                $length: length($shadow);
+
+                $color: inherit;
+                $opacity: 100;
+                $offset-x: 0;
+                $offset-y: 0;
+                $blur-radius: 0;
+                $spread: 0;
+
+                @if type-of(nth($shadow, 1)) == color {
+                    @if $length >= 1 { $color: nth($shadow, 1); }
+                    @if $length >= 2 { $offset-x: nth($shadow, 2); }
+                    @if $length >= 3 { $offset-y: nth($shadow, 3); }
+                    @if $length >= 4 { $blur-radius: nth($shadow, 4); }
+                    @if $length == 5 { $spread: nth($shadow, 5); }
+                } @else {
+                    @if type-of(nth($shadow, $length)) == color {
+                        $color: nth($shadow, $length);
+                    }
+                    @if $length >= 1 { $offset-x: nth($shadow, 1); }
+                    @if $length >= 2 { $offset-y: nth($shadow, 2); }
+                    @if $length >= 3 {
+                        @if type-of(nth($shadow, 3)) != color { $blur-radius: nth($shadow, 3); }
+                    }
+                    @if $length >= 4 {
+                        @if type-of(nth($shadow, 4)) != color { $spread: nth($shadow, 4); }
+                    }
+                }
+
+                @if $color != inherit {
+                    $opacity: round(alpha($color) * 100);
+                    $color: rgb(red($color), green($color), blue($color));
+                }
+
+                @if unit($blur-radius) == px {
+                    $blur-radius: $blur-radius / 1px;
+                }
+
+                .ui-text-shadow-copy-#{$i} {
+                    visibility: visible;
+                    color: $color;
+                    filter: if( $opacity < 100, unquote("progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$opacity})"), unquote("") )
+                    if( $blur-radius > 0, unquote("progid:DXImageTransform.Microsoft.Blur(makeShadow=false,pixelRadius=#{$blur-radius})"), unquote("") );
+                    left: $offset-x - $blur-radius;
+                    top: $offset-y - $blur-radius;
+
+                    .ie-8 & {
+                        top: $offset-y - $blur-radius + 1px;
+                    }
+
+                }
+                $i: $i + 1;
+            }
+        }
+    }
+}

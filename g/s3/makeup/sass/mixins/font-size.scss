@@ -1,0 +1,4 @@
+@mixin font-size ($size) {
+    @if $legacy-support-for-ie and $legacy-support-for-ie8 {font-size: $size;}
+    font-size: rem($size);
+}

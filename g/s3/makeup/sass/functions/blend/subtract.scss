@@ -1,0 +1,7 @@
+@function blend-subtract ($foreground, $background) {
+  $bm-red: max(red($background) - red($foreground), 0);
+  $bm-green: max(green($background) - green($foreground), 0);
+  $bm-blue: max(blue($background) - blue($foreground), 0);
+
+  @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
+}

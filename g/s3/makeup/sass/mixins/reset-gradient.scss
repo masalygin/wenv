@@ -1,0 +1,12 @@
+@mixin reset-gradient($color: transparent, $ie_fix: $fix) {    
+    @if ($color!="transparent") {
+        background-color: $color;	
+    }
+    background-image: none;
+    @if $ie_fix == pie and $legacy-support-for-ie and $experimental-support-for-pie {
+        -pie-background: $color;
+    }
+    @else if ($ie_fix == filter) and $legacy-support-for-ie and $legacy-support-for-ie8 {
+        -ms-filter: "progid:DXImageTransform.Microsoft.Gradient(enabled=false)";
+    }  
+}

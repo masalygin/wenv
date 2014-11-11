@@ -1,0 +1,3 @@
+@function em ($size, $base) {
+    @return ($size / $base) * 1em;
+}
