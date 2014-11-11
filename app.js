@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sass = require('node-sass');
 var fs = require('fs');
+var config = require('./config.json');
 
 var app = express();
 
@@ -14,6 +15,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+
+
+RegExp.escape = function(text) {
+	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
 
 
 app.get(/^(.+\.scss\.css)$/, function (req, res) {
@@ -74,6 +80,10 @@ app.get(/^(.+\.html)$/, function (req, res) {
 		if (err) {
 			error(err);
 			return;
+		}
+
+		for (var val in config.aliases) {
+			data = data.replace(new RegExp(RegExp.escape(val), 'g'), config.aliases[val]);
 		}
 
 		data = data
