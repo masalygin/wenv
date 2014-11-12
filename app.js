@@ -26,7 +26,10 @@ RegExp.escape = function(text) {
 app.get(/^(.+\.scss\.css)$/, function (req, res) {
 
 	var cssFile = './sites' + req.params['0'];
-	var scssFile = cssFile.replace(/\.scss\.css$/, '.scss')
+	var scssFile = cssFile.replace(/\.scss\.css$/, '.scss');
+	var imageFolder = scssFile.split('/images/')[0] + '/images/';
+	var globalFolder = './g/';
+
 
 	function error(err) {
 
@@ -52,7 +55,7 @@ app.get(/^(.+\.scss\.css)$/, function (req, res) {
 
 		sass.render({
 			data: data,
-			includePaths: ['./g/'],
+			includePaths: [imageFolder, globalFolder],
 			success: function (css) {
 
 				fs.writeFile(cssFile, css, function (err) {
