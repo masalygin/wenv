@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sass = require('node-sass');
 var fs = require('fs');
+var notifier = require('node-notifier');
 var config = require('./config.json');
 
 var app = express();
@@ -28,8 +29,16 @@ app.get(/^(.+\.scss\.css)$/, function (req, res) {
 	var scssFile = cssFile.replace(/\.scss\.css$/, '.scss')
 
 	function error(err) {
+
 		console.log(err);
-		res.send('Error!');
+
+		notifier.notify({
+			title: 'wenv',
+			message: scssFile + '\n' + err
+		});
+
+		res.status(404).end();
+
 	}
 
 	fs.readFile(scssFile, 'utf8', function (err, data) {
@@ -71,8 +80,16 @@ app.get(/^(.+\.html)$/, function (req, res) {
 	var filename = './sites' + req.params['0'];
 
 	function error(err) {
+
 		console.log(err);
-		res.send('Error!');
+
+		notifier.notify({
+			title: 'wenv',
+			message: filename + '\n' + err
+		});
+
+		res.status(404).end();
+
 	}
 
 	fs.readFile(filename, 'utf8', function (err, data) {
