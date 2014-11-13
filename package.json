@@ -12,6 +12,11 @@
     "cookie-parser": "~1.0.1",
     "body-parser": "~1.0.0",
     "node-sass": "~1.2.2",
-    "node-notifier": "~4.0.2"
+    "node-notifier": "~4.0.2",
+    "nconf": "~0.6.9",
+    "vinyl-fs": "~0.3.11",
+    "map-stream": "0.0.5",
+    "lodash": "~2.4.1",
+    "del": "~0.1.3"
   }
 }
