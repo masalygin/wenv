@@ -5,9 +5,9 @@ var utils = require('../utils');
 
 module.exports = function(app) {
 
-	app.get(/\/$/, function(req, res) {
+	/*app.get(/\/$/, function(req, res) {
 		res.redirect('index.html');
-	});
+	});*/
 
 
 	app.get(/^(.+\.html)$/, function (req, res) {
