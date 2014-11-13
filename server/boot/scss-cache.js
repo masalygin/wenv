@@ -6,7 +6,7 @@ module.exports = function(app) {
 	del('./.cache', function() {
 
 		utils.replace({
-			glob: './client/public/g/**/*.scss',
+			glob: './client/resources/g/**/*.scss',
 			dest: './.cache/g/',
 			search: /global:\//g,
 			replacement: ''

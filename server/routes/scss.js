@@ -35,7 +35,7 @@ module.exports = function (app) {
 			sass.renderFile({
 				file: cacheFolder + parts[1],
 				outFile: cssFile,
-				includePaths: ['./.cache/site/', './.cache/g/', './client/public/'],
+				includePaths: ['./.cache/site/', './.cache/g/', './client/resources/'],
 				success: function () {
 					res.sendfile(cssFile);
 				},
