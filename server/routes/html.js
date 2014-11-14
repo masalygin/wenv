@@ -3,6 +3,35 @@ var notifier = require('node-notifier');
 var config = require('nconf');
 var utils = require('../utils');
 
+var aliases = config.get('aliases');
+var smarty = config.get('smarty');
+
+function replaceAliases(data) {
+	for (var key in aliases) {
+		data = data.replace(new RegExp(utils.regExpEscape(key), 'g'), aliases[key]);
+	}
+	return data;
+}
+
+function createSmartyRegExp() {
+	var double = smarty.double.join('|');
+	var str = [];
+
+	str.push('\\{(' + double + ')[^\\}]+\\}');
+	str.push('\\{\\/(' + double + ')\\}');
+	str.push('\\{(' + smarty.single.join('|') + ')[^\\}]*\\}');
+	str = '(' + str.join('|') + ')';
+
+	return new RegExp(str, 'g');
+}
+
+var smartyRegExp = createSmartyRegExp();
+
+function replaceSmarty(data) {
+	return data.replace(smartyRegExp, '');
+}
+
+
 module.exports = function(app) {
 
 	/*app.get(/\/$/, function(req, res) {
@@ -34,17 +63,8 @@ module.exports = function(app) {
 				return;
 			}
 
-			var aliases = config.get('aliases');
-
-			for (var key in aliases) {
-				data = data.replace(new RegExp(utils.regExpEscape(key), 'g'), aliases[key]);
-			}
-
-			data = data
-				.replace(/(\{\$common_js\})/g, '')
-				.replace(/(\{(if|foreach)[^\}]+\})/g, '')
-				.replace(/(\{\/(if|foreach)\})/g, '')
-				.replace(/(\{else[^\}]*\})/g, '');
+			data = replaceAliases(data);
+			data = replaceSmarty(data);
 
 			res.send(data);
 

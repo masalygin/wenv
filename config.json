@@ -1,5 +1,24 @@
 {
-  "aliases": {
-    "{$block.body}": "Вас приветствует компания Мегагруп. В дан... <a href=\"#\">Подробнее</a>"
-  }
+	"aliases": {
+		"{$common_js}": "",
+		"{ldelim}": "{",
+		"{rdelim}": "}",
+		"{$block.body}": "Вас приветствует компания Мегагруп. В дан... <a href=\"#\">Подробнее</a>"
+	},
+	"smarty": {
+		"single": [
+			"else",
+			"elseif",
+			"foreachelse",
+			"sectionelse"
+		],
+		"double": [
+			"if",
+			"foreach",
+			"capture",
+			"section",
+			"literal",
+			"strip"
+		]
+	}
 }
