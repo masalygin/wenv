@@ -3,8 +3,8 @@ var notifier = require('node-notifier');
 var config = require('nconf');
 var utils = require('../utils');
 
+
 var aliases = config.get('aliases');
-var smarty = config.get('smarty');
 
 function replaceAliases(data) {
 	for (var key in aliases) {
@@ -13,17 +13,9 @@ function replaceAliases(data) {
 	return data;
 }
 
-function createSmartyRegExp() {
-	var str =
-		'(' +
-		'\\{\\/?(' + smarty.double.join('|') + ')[^\\}]*\\}' +
-		'|' +
-		'\\{(' + smarty.single.join('|') + ')[^\\}]*\\}' +
-		')';
-	return new RegExp(str, 'g');
-}
 
-var smartyRegExp = createSmartyRegExp();
+var smarty = config.get('smarty');
+var smartyRegExp = new RegExp('(\\{\\/?(' + smarty.join('|') + ')[^\\}]*\\})', 'g');
 
 function replaceSmarty(data) {
 	return data.replace(smartyRegExp, '');

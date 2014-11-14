@@ -5,20 +5,16 @@
 		"{rdelim}": "}",
 		"{$block.body}": "Вас приветствует компания Мегагруп. В дан... <a href=\"#\">Подробнее</a>"
 	},
-	"smarty": {
-		"single": [
-			"else",
-			"elseif",
-			"foreachelse",
-			"sectionelse"
-		],
-		"double": [
-			"if",
-			"foreach",
-			"capture",
-			"section",
-			"literal",
-			"strip"
-		]
-	}
+	"smarty": [
+		"if",
+		"foreach",
+		"capture",
+		"section",
+		"literal",
+		"strip",
+		"else",
+		"elseif",
+		"foreachelse",
+		"sectionelse"
+	]
 }
