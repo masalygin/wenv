@@ -14,14 +14,12 @@ function replaceAliases(data) {
 }
 
 function createSmartyRegExp() {
-	var double = smarty.double.join('|');
-	var str = [];
-
-	str.push('\\{(' + double + ')[^\\}]+\\}');
-	str.push('\\{\\/(' + double + ')\\}');
-	str.push('\\{(' + smarty.single.join('|') + ')[^\\}]*\\}');
-	str = '(' + str.join('|') + ')';
-
+	var str =
+		'(' +
+		'\\{\\/?(' + smarty.double.join('|') + ')[^\\}]*\\}' +
+		'|' +
+		'\\{(' + smarty.single.join('|') + ')[^\\}]*\\}' +
+		')';
 	return new RegExp(str, 'g');
 }
 
@@ -32,7 +30,7 @@ function replaceSmarty(data) {
 }
 
 
-module.exports = function(app) {
+module.exports = function (app) {
 
 	/*app.get(/\/$/, function(req, res) {
 		res.redirect('index.html');
