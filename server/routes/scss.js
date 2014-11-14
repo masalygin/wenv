@@ -7,12 +7,8 @@ module.exports = function (app) {
 
 	app.get(/^(.+\.scss\.css)$/, function (req, res) {
 
-		var cssFile = './client/sites' + req.params['0'];
+		var cssFile = './client/sites' + req.originalUrl;
 		var scssFile = cssFile.replace(/\.scss\.css$/, '.scss');
-		var parts = scssFile.split('/images/');
-		var imageFolder = parts[0] + '/images/';
-		var cacheFolder = '.cache/site/';
-
 
 		function error(err) {
 			console.log(err);
@@ -23,28 +19,15 @@ module.exports = function (app) {
 			res.status(404).send('404');
 		}
 
-		utils.replace({
-
-			glob: imageFolder + '**/*.scss',
-			dest: cacheFolder,
-			search: /global:\//g,
-			replacement: ''
-
-		}).on('end', function() {
-
-			sass.renderFile({
-				file: cacheFolder + parts[1],
-				outFile: cssFile,
-				includePaths: ['./.cache/site/', './.cache/g/', './client/resources/'],
-				success: function () {
-					res.sendfile(cssFile);
-				},
-				error: error
-			});
-
+		sass.renderFile({
+			file: '.cache/site/images/' + scssFile.split('/images/')[1],
+			outFile: cssFile,
+			includePaths: ['./.cache/site/images', './.cache/g/', './client/resources/'],
+			success: function () {
+				res.sendfile(cssFile);
+			},
+			error: error
 		});
-
-
 
 	});
 
