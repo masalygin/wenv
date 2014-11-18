@@ -20,7 +20,7 @@
 	"get": {
 		"mode": {
 			"cart": {
-				"{tpl.body}": "{include file=\"db:cart.tpl\"}"
+				"{tpl.body}": "{include file=\"global:cart.tpl\"}"
 			}
 		}
 	}

@@ -1,5 +1,5 @@
 var del = require('del');
-var utils = require('../utils');
+var utils = require('../lib/utils');
 
 module.exports = function(app) {
 

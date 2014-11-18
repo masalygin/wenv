@@ -1,8 +1,8 @@
 var notifier = require('node-notifier');
 var config = require('nconf');
-var utils = require('../utils');
+var utils = require('../lib/utils');
 var path = require('path');
-var Collector = require('fcollector');
+var Collector = require('../lib/fcollector');
 var url = require('url');
 var _ = require('lodash');
 
@@ -79,6 +79,8 @@ module.exports = function (app) {
 
 		new Collector({
 
+			altPath: './client/resources/tpl',
+
 			main: filepath,
 
 			success: function(data) {
@@ -101,14 +103,17 @@ module.exports = function (app) {
 
 				data = data.replace(/\{include\s+file="(db|global):([^"]+)"[^\}]*\}/g, function(include, resource, filename) {
 
-					var filepath = path.resolve(dir, filename);
+					var s = {};
+					s.filepath = path.resolve(dir, filename);
+					s.include = include;
 
-					sub.push({
-						filepath: filepath,
-						include: include
-					});
+					if (resource === 'global') {
+						s.altpath = path.resolve(self.altPath, filename);
+					}
 
-					return self.label + filepath;
+					sub.push(s);
+
+					return self.label + s.filepath;
 
 				});
 
