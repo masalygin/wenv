@@ -3,6 +3,7 @@ var notifier = require('node-notifier');
 var config = require('nconf');
 var utils = require('../utils');
 var path = require('path');
+var Collector = require('fcollector');
 
 var aliases = config.get('aliases');
 
@@ -28,7 +29,7 @@ function replaceSmarty(data) {
 module.exports = function (app) {
 
 
-	app.get(/^(.+\.html)$/, function (req, res) {
+	app.get(/^(.+\.(html|tpl))$/, function (req, res) {
 
 		var filepath = './client/sites' + req.originalUrl;
 		var dir = path.dirname(filepath);
@@ -64,16 +65,45 @@ module.exports = function (app) {
 		});
 
 
-		fs.readFile(filepath, 'utf8', function (err, data) {
-			if (err) {
-				error(err);
-				return;
-			}
-			html = replaceAliases(data);
-			html = replaceSmarty(html);
-			isHtmlReady = true;
-			send();
+		new Collector({
 
+			main: filepath,
+
+			success: function(data) {
+
+				html = replaceAliases(data);
+				html = replaceSmarty(html);
+				isHtmlReady = true;
+				send();
+
+			},
+
+			error: error,
+
+			pipe: function(data) {
+
+				var self = this;
+				var sub = [];
+
+				data = data.replace(/\{include\s+file="(db|global):([^"]+)"[^\}]*\}/g, function(include, resource, filename) {
+
+					var filepath = path.resolve(dir, filename);
+
+					sub.push({
+						filepath: filepath,
+						include: include
+					});
+
+					return self.label + filepath;
+
+				});
+
+				return {
+					data: data,
+					sub: sub
+				};
+
+			}
 		});
 
 	});
