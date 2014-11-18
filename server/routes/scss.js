@@ -1,7 +1,6 @@
 var notifier = require('node-notifier');
 var sass = require('node-sass');
 var path = require('path');
-var utils = require('../utils');
 
 module.exports = function (app) {
 

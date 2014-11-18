@@ -1,5 +1,6 @@
 var express = require('express');
 var config = require('nconf');
+var http = require('http');
 var app = express();
 
 
@@ -9,6 +10,6 @@ require('./boot')(app);
 require('./routes')(app);
 
 
-var server = app.listen(app.get('port'), function () {
-	console.log('Express server listening on port ' + server.address().port);
+http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
+	console.log('Express server listening on http://' + app.get('ip') + ':' + app.get('port'));
 });
