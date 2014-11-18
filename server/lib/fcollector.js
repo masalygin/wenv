@@ -8,7 +8,9 @@ function Collector(options) {
 	}
 
 	this.cache = {};
-	this.load({}, this.main);
+	this.load({
+		filepath: this.main
+	});
 
 }
 
@@ -19,10 +21,13 @@ Collector.prototype.error = function() {};
 Collector.prototype.ignoreNonexistent = true;
 
 
-Collector.prototype.load = function (sub, filepath, include, isAlt) {
+Collector.prototype.load = function (sub, isAlt) {
 
 	var self = this;
-	var path = isAlt ? sub.altpath : filepath
+	var filepath = sub.filepath;
+	var altpath = sub.altpath;
+	var path = isAlt ? altpath : filepath;
+	var include = sub.include;
 
 	if (this.cache[filepath] && !isAlt) {
 		return;
@@ -34,9 +39,9 @@ Collector.prototype.load = function (sub, filepath, include, isAlt) {
 
 		if (err) {
 
-			if (sub.altpath && path !== sub.altpath) {
+			if (altpath && path !== altpath) {
 
-				self.load(sub, filepath, include, true);
+				self.load(sub, true);
 				return;
 
 			} else {
@@ -57,7 +62,7 @@ Collector.prototype.load = function (sub, filepath, include, isAlt) {
 			if (data.sub) {
 
 				for (var i = 0, len = data.sub.length; i < len; i++) {
-					self.load(data.sub[i], data.sub[i].filepath, data.sub[i].include);
+					self.load(data.sub[i]);
 				}
 
 			}
