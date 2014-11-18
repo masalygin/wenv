@@ -16,5 +16,12 @@
 		"elseif",
 		"foreachelse",
 		"sectionelse"
-	]
+	],
+	"get": {
+		"mode": {
+			"cart": {
+				"{tpl.body}": "{include file=\"db:cart.tpl\"}"
+			}
+		}
+	}
 }
