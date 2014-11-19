@@ -1,6 +1,6 @@
 var vinyl = require('vinyl-fs');
 var map = require('map-stream');
-
+var notifier = require('node-notifier');
 
 var replace = function(search, replacement) {
 	return function(file, cb) {
@@ -19,4 +19,18 @@ module.exports.replace = function(opt) {
 
 module.exports.regExpEscape = function(text) {
 	return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
+
+
+module.exports.error = function(message, res) {
+
+	console.error(message);
+
+	notifier.notify({
+		title: 'wenv',
+		message: message
+	});
+
+	res.status(404).send(message);
+
 };

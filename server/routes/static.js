@@ -10,5 +10,6 @@ module.exports = function(app) {
 
 	app.use(express.static('./client/sites'));
 	app.use(express.static('./client/resources'));
+	app.use(express.static('./.cache'));
 
 };

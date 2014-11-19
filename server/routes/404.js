@@ -1,15 +1,10 @@
-var notifier = require('node-notifier');
+var utils = require('../lib/utils')
 
 module.exports = function(app) {
 
-	app.use(function (req, res, next) {
+	app.use(function (req, res) {
 
-		notifier.notify({
-			title: 'wenv',
-			message: req.originalUrl + '\nNOT FOUND'
-		});
-
-		res.status(404).end();
+		utils.error(req.originalUrl + '\nNOT FOUND', res);
 
 	});
 

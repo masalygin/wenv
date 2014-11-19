@@ -1,4 +1,3 @@
-var notifier = require('node-notifier');
 var config = require('../../config.json');
 var utils = require('../lib/utils');
 var path = require('path');
@@ -38,7 +37,6 @@ function replaceByGet(data, query) {
 
 module.exports = function (app) {
 
-
 	app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 		var uri = url.parse(req.originalUrl);
@@ -47,16 +45,6 @@ module.exports = function (app) {
 		var isScssReady = false;
 		var isHtmlReady = false;
 		var html = '';
-
-		function error(err) {
-			console.error(err);
-			notifier.notify({
-				title: 'wenv',
-				message: filepath + '\n' + err
-			});
-			res.status(404).send('404');
-		}
-
 
 		function send() {
 			if (isScssReady && isHtmlReady) {
@@ -90,7 +78,11 @@ module.exports = function (app) {
 
 			},
 
-			error: error,
+			error: function(err) {
+
+				utils.error(uri.pathname + '\n' + err, res);
+
+			},
 
 			pipe: function(data) {
 
