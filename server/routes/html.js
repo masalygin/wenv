@@ -84,8 +84,7 @@ module.exports = function (app) {
 
 			success: function(data) {
 
-				html = replaceAliases(data);
-				html = replaceSmarty(html);
+				html = replaceSmarty(data);
 				isHtmlReady = true;
 				send();
 
@@ -99,6 +98,7 @@ module.exports = function (app) {
 				var sub = [];
 
 				data = replaceByGet(data, req.query);
+				data = replaceAliases(data);
 
 				data = data.replace(/\{include\s+file="(db|global):([^"]+)"[^\}]*\}/g, function(include, resource, filename) {
 
