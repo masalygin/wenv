@@ -10,7 +10,7 @@ module.exports = function (app) {
 		var scssFile = cssFile.replace(/\.scss\.css$/, '.scss');
 
 		function error(err) {
-			console.log(err);
+			console.error(err);
 			notifier.notify({
 				title: 'wenv',
 				message: scssFile + '\n' + err

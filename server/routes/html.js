@@ -1,14 +1,13 @@
 var notifier = require('node-notifier');
-var config = require('nconf');
+var config = require('../../config.json');
 var utils = require('../lib/utils');
 var path = require('path');
 var Collector = require('../lib/fcollector');
 var url = require('url');
 var _ = require('lodash');
 
-
 function replaceAliases(data, aliases) {
-	aliases = aliases || config.get('aliases');
+	aliases = aliases || config['aliases'];
 	_.each(aliases, function(val, key) {
 		data = data.replace(new RegExp(utils.regExpEscape(key), 'g'), val);
 	});
@@ -16,14 +15,14 @@ function replaceAliases(data, aliases) {
 }
 
 
-var smartyRegExp = new RegExp('(\\{\\/?(' + config.get('smarty').join('|') + ')[^\\}]*\\})', 'g');
+var smartyRegExp = new RegExp('(\\{\\/?(' + config['smarty'].join('|') + ')[^\\}]*\\})', 'g');
 
 function replaceSmarty(data) {
 	return data.replace(smartyRegExp, '');
 }
 
 
-var GET = config.get('get');
+var GET = config['get'];
 
 function replaceByGet(data, query) {
 	_.each(query, function(val, key) {
@@ -50,7 +49,7 @@ module.exports = function (app) {
 		var html = '';
 
 		function error(err) {
-			console.log(err);
+			console.error(err);
 			notifier.notify({
 				title: 'wenv',
 				message: filepath + '\n' + err
