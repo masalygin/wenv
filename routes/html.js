@@ -2,12 +2,10 @@ var config = require('../config');
 var lib = require('../lib');
 var path = require('path');
 var url = require('url');
+var fs = require('fs-extra');
 var _ = require('lodash');
+var Smarty = lib.Smarty;
 
-require('jsmart');
-
-var tpl = new jSmart('{foreach from=$menu item=e key=k}{$k}555{$e}{/foreach}');
-console.log(tpl.fetch({menu: {a: 1, b:2}}));
 
 function replace(data, aliases) {
 	aliases = aliases || config.replace['*'];
@@ -17,16 +15,9 @@ function replace(data, aliases) {
 	return data;
 }
 
-//var smartyRegExp = new RegExp('(\\{\\/?(' + config['smarty'].join('|') + ')[^\\}]*\\})', 'g');
-
-//function replaceSmarty(data) {
-//	return data.replace(smartyRegExp, '');
-//}
-
-
-var GET = config.replace['get'];
 
 function replaceByGet(data, query) {
+	var GET = config.replace['get'];
 	_.each(query, function(val, key) {
 		if (GET[key]) {
 			if (GET[key][val]) {
@@ -40,14 +31,20 @@ function replaceByGet(data, query) {
 
 module.exports = function (app) {
 
+	var workDir = app.get('workDir');
+
+	Smarty.prototype.globalDir = app.get('templatesDir');
+
 	app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 		var uri = url.parse(req.originalUrl);
-		var filepath = './client/sites' + uri.pathname;
+		var filepath = path.join(workDir, uri.pathname);
 		var dir = path.dirname(filepath);
 		var isScssReady = false;
 		var isHtmlReady = false;
 		var html = '';
+
+		Smarty.prototype.templatesDir = dir;
 
 		function send() {
 			if (isScssReady && isHtmlReady) {
@@ -65,6 +62,22 @@ module.exports = function (app) {
 		//	isScssReady = true;
 		//	send();
 		//});
+
+
+		fs.readFile(filepath, function(err, buffer) {
+
+			if (err) {
+				lib.sendError(err,  res);
+				return;
+			}
+
+			var text = buffer.toString();
+			var tpl = new Smarty(text);
+			text = tpl.fetch(config.smarty);
+
+			res.send(text);
+
+		});
 
 
 		/*new Collector({
