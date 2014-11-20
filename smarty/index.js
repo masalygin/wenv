@@ -15,6 +15,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
+var templateData = require('./data')
 
 
 var defaultsDeep = _.partialRight(_.merge, function deep(value, other) {
@@ -1611,7 +1612,7 @@ var jSmart = function (tpl, data) {
 			rdelim: jSmart.prototype.right_delimiter,
 			version: '2.13.1'
 		}
-	}, data);
+	}, templateData, data);
 
 	blocks = this.tree.blocks;
 	parse(
@@ -1757,13 +1758,13 @@ jSmart.prototype.getTemplate = function (name) {
 
 		} else {
 
-			this.templateNotFound(name);
+			buffer = 'No template for ' +  name;
 
 		}
 
 	} else {
 
-		this.templateNotFound(name);
+		buffer = 'No template for ' + name;
 
 	}
 
