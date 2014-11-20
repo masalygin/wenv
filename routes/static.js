@@ -3,13 +3,14 @@ var directory = require('serve-index');
 
 module.exports = function(app) {
 
-	app.use(directory('./client/sites', {
-		icons: true,
-		view: 'details'
-	}));
+	var workDir = app.get('workDir');
+	var staticDir = app.get('staticDir');
+	var cacheDir = app.get('cacheDir');
 
-	app.use(express.static('./client/sites'));
-	app.use(express.static('./client/resources'));
-	app.use(express.static('./.cache'));
+	app.use(directory(workDir, {icons: true, view: 'details'}));
+
+	app.use(express.static(workDir));
+	app.use(express.static(staticDir));
+	app.use(express.static(cacheDir));
 
 };
