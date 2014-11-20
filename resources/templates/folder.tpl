@@ -130,7 +130,7 @@
 	<form method="post" action="{$shop2.uri}?mode=cart&amp;action=add" accept-charset="utf-8" class="shop2-product-item product-item-simple">
 		<input type="hidden" name="kind_id" value="{$product.kind_id}" />
 		<input type="hidden" name="product_id" value="{$product.product_id}" />
-		<input type="hidden" name="meta" value='{$product.meta|@json_encode|htmlspecialchars}'/>
+		<input type="hidden" name="meta" value='{$product.meta}'/>
 
 		<div class="shop2-clear-container"></div>
 		<div class="product-side-l">
@@ -362,7 +362,7 @@
 	<form method="post" action="{$shop2.uri}?mode=cart&amp;action=add" accept-charset="utf-8" class="shop2-product-item product-item-simple">
 		<input type="hidden" name="kind_id" value="{$product.kind_id}" />
 		<input type="hidden" name="product_id" value="{$product.product_id}" />
-		<input type="hidden" name="meta" value='{$product.meta|@json_encode|htmlspecialchars}'/>
+		<input type="hidden" name="meta" value='{$product.meta}'/>
 
 		<div class="shop2-clear-container"></div>
 		<div class="product-side-l">
@@ -419,7 +419,7 @@
 	<form method="post" action="{$shop2.uri}?mode=cart&amp;action=add" accept-charset="utf-8" class="shop2-product-item product-item-simple">
 		<input type="hidden" name="kind_id" value="{$product.kind_id}" />
 		<input type="hidden" name="product_id" value="{$product.product_id}" />
-		<input type="hidden" name="meta" value='{$product.meta|@json_encode|htmlspecialchars}'/>
+		<input type="hidden" name="meta" value='{$product.meta}'/>
 
 		<div class="shop2-clear-container"></div>
 		<div class="product-side-l">
@@ -866,7 +866,7 @@
 				</label>
 			</div>
 
-			<a class="shop2-options-btn" href="#" data-alt="{$shop2.my.pricelist_options_hide_alias|htmlspecialchars|default:#SHOP2_HIDE_PARAMETERS#}">
+			<a class="shop2-options-btn" href="#" data-alt="{$shop2.my.pricelist_options_hide_alias|default:#SHOP2_HIDE_PARAMETERS#}">
 				Показать параметры
 			</a> 
 
