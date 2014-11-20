@@ -7,11 +7,15 @@ var lib = require('../lib')
 
 module.exports = function(app) {
 
+	var cacheDir = app.get('cacheDir');
+
 	app.use('/', function(req, res) {
 
 		var uri = url.parse(req.originalUrl);
 		var u = url.resolve('http://dumper.demojs0.oml.ru/', uri.pathname);
-		var p = path.join('./.cache', uri.pathname);
+		var p = path.join(cacheDir, uri.pathname);
+
+		console.log(p);
 
 		extra.mkdirp(path.dirname(p), function(err) {
 
