@@ -12,12 +12,11 @@ module.exports = function (app) {
 	app.get(/^(.+\.scss\.css)$/, function (req, res) {
 
 		var uri = url.parse(req.originalUrl);
-		var cssFile = uri.pathname;
+		var cssFile = path.join(cacheDir, 'site/images', uri.pathname.split('/images/')[1]);
 		var scssFile = cssFile.replace(/\.scss\.css$/, '.scss');
-		cssFile = path.join(workDir, cssFile);
 
 		sass.renderFile({
-			file: path.join(cacheDir, 'site/images', scssFile.split('/images/')[1]),
+			file: scssFile,
 			outFile: cssFile,
 			includePaths: [
 				path.join(cacheDir, 'site/images'),

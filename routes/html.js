@@ -5,7 +5,7 @@ var url = require('url');
 var fs = require('fs-extra');
 var _ = require('lodash');
 var Smarty = require('../smarty');
-
+var Gaze = require('gaze');
 
 function replace(text, aliases) {
 
@@ -40,7 +40,8 @@ module.exports = function (app) {
 	var workDir = app.get('workDir');
 	var cacheDir = app.get('cacheDir');
 	var templatesDir = app.get('templatesDir');
-
+	var prevDir = null;
+	var watcher = null;
 
 	app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
@@ -58,6 +59,30 @@ module.exports = function (app) {
 			return text;
 		};
 
+		if (prevDir !== dir) {
+
+			if (prevDir) {
+				watcher.close();
+			}
+
+			watcher = new Gaze('**/*', {
+				cwd: dir
+			});
+
+			function reload() {
+				if (app.socket) {
+					app.socket.emit('reload');
+				}
+			}
+
+			watcher.on('all', function(event, filepath) {
+				reload();
+			});
+
+		}
+
+		prevDir = dir;
+
 		lib.sassToCache(dir, path.join(cacheDir, 'site'), '**/*.scss');
 
 
@@ -68,7 +93,8 @@ module.exports = function (app) {
 				return;
 			}
 
-			var text = Smarty.prototype.getTemplatePipe.call(null, buffer);
+			var text = Smarty.prototype.getTemplatePipe.call(null, buffer) +
+				'{include file="global:livereload.tpl"}';
 
 
 			var tpl = new Smarty(text, {
@@ -77,7 +103,7 @@ module.exports = function (app) {
 				}
 			});
 
-			var html = tpl.fetch(config.smarty);
+			var html = tpl.fetch({});
 
 			res.send(html);
 
