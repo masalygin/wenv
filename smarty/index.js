@@ -14,6 +14,12 @@
 
 var fs = require('fs');
 var path = require('path');
+var _ = require('lodash');
+
+
+var defaultsDeep = _.partialRight(_.merge, function deep(value, other) {
+	return _.merge(value, other, deep);
+});
 
 
 function obMerge(ob1, ob2 /*, ...*/) {
@@ -1579,13 +1585,14 @@ function applyFilters(filters, s) {
 }
 
 
-var jSmart = function (tpl) {
+var jSmart = function (tpl, data) {
 	this.tree = [];
 	this.tree.blocks = {};
 	this.scripts = {};
 	this.default_modifiers = [];
 	this.filters = {'variable': [], 'post': []};
-	this.smarty = {
+
+	this.smarty = defaultsDeep({}, {
 		'smarty': {
 			block: {},
 			'break': false,
@@ -1604,7 +1611,8 @@ var jSmart = function (tpl) {
 			rdelim: jSmart.prototype.right_delimiter,
 			version: '2.13.1'
 		}
-	};
+	}, data);
+
 	blocks = this.tree.blocks;
 	parse(
 		applyFilters(jSmart.prototype.filters_global.pre, stripComments((new String(tpl ? tpl : '')).replace(/\r\n/g, '\n'))),
@@ -1737,7 +1745,6 @@ jSmart.prototype.getTemplate = function (name) {
 	if (exists) {
 
 		buffer = fs.readFileSync(filepath);
-		return buffer.toString();
 
 	} else if (resource === 'global') {
 
@@ -1747,7 +1754,6 @@ jSmart.prototype.getTemplate = function (name) {
 		if (exists) {
 
 			buffer = fs.readFileSync(filepath);
-			return buffer.toString();
 
 		} else {
 
@@ -1760,10 +1766,18 @@ jSmart.prototype.getTemplate = function (name) {
 		this.templateNotFound(name);
 
 	}
+
+	return this.getTemplatePipe(buffer, filename, resource);
+
 };
 
 jSmart.prototype.templateNotFound = function(filename) {
 	throw new Error('No template for ' + filename);
+};
+
+
+jSmart.prototype.getTemplatePipe = function(buffer) {
+	return buffer.toString();
 };
 
 /**
