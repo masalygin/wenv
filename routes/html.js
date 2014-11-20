@@ -99,7 +99,9 @@ module.exports = function (app) {
 
 			var tpl = new Smarty(text, {
 				smarty: {
-					'get': req.query
+					'get': req.query,
+					ip: app.get('ip'),
+					port: app.get('port')
 				}
 			});
 
