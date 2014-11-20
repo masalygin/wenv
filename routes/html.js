@@ -1,27 +1,31 @@
-var config = require('../../config.json');
+var config = require('../config');
 var utils = require('../lib/utils');
 var path = require('path');
 var Collector = require('../lib/fcollector');
 var url = require('url');
 var _ = require('lodash');
 
-function replaceAliases(data, aliases) {
-	aliases = aliases || config['aliases'];
+require('jsmart');
+
+var tpl = new jSmart('{foreach from=$menu item=e key=k}{$k}555{$e}{/foreach}');
+console.log(tpl.fetch({menu: {a: 1, b:2}}));
+
+function replace(data, aliases) {
+	aliases = aliases || config.replace['*'];
 	_.each(aliases, function(val, key) {
 		data = data.replace(new RegExp(utils.regExpEscape(key), 'g'), val);
 	});
 	return data;
 }
 
+//var smartyRegExp = new RegExp('(\\{\\/?(' + config['smarty'].join('|') + ')[^\\}]*\\})', 'g');
 
-var smartyRegExp = new RegExp('(\\{\\/?(' + config['smarty'].join('|') + ')[^\\}]*\\})', 'g');
-
-function replaceSmarty(data) {
-	return data.replace(smartyRegExp, '');
-}
+//function replaceSmarty(data) {
+//	return data.replace(smartyRegExp, '');
+//}
 
 
-var GET = config['get'];
+var GET = config.replace['get'];
 
 function replaceByGet(data, query) {
 	_.each(query, function(val, key) {
