@@ -1,7 +1,6 @@
 var config = require('../config');
-var utils = require('../lib/utils');
+var lib = require('../lib');
 var path = require('path');
-var Collector = require('../lib/fcollector');
 var url = require('url');
 var _ = require('lodash');
 
@@ -13,7 +12,7 @@ console.log(tpl.fetch({menu: {a: 1, b:2}}));
 function replace(data, aliases) {
 	aliases = aliases || config.replace['*'];
 	_.each(aliases, function(val, key) {
-		data = data.replace(new RegExp(utils.regExpEscape(key), 'g'), val);
+		data = data.replace(new RegExp(lib.regexpEscape(key), 'g'), val);
 	});
 	return data;
 }
@@ -57,18 +56,18 @@ module.exports = function (app) {
 		}
 
 
-		utils.replace({
-			glob: dir + '/**/*.scss',
-			dest: '.cache/site/',
-			search: /global:\//g,
-			replacement: ''
-		}).on('end', function() {
-			isScssReady = true;
-			send();
-		});
+		//utils.replace({
+		//	glob: dir + '/**/*.scss',
+		//	dest: '.cache/site/',
+		//	search: /global:\//g,
+		//	replacement: ''
+		//}).on('end', function() {
+		//	isScssReady = true;
+		//	send();
+		//});
 
 
-		new Collector({
+		/*new Collector({
 
 			altPath: './client/resources/tpl',
 
@@ -84,7 +83,7 @@ module.exports = function (app) {
 
 			error: function(err) {
 
-				utils.error(uri.pathname + '\n' + err, res);
+				lib.sendError(uri.pathname + '\n' + err, res);
 
 			},
 
@@ -118,7 +117,7 @@ module.exports = function (app) {
 				};
 
 			}
-		});
+		});*/
 
 	});
 

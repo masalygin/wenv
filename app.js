@@ -1,14 +1,18 @@
 var express = require('express');
 var http = require('http');
+var ip = require('ip');
 var path = require('path');
 var app = express();
 
 
-app.set('workFolder', path.resolve(__dirname, '../work'));
-app.set('cacheFolder', path.join(__dirname, 'cache'));
-app.set('compassFolder', path.join(__dirname, 'resources/compass'));
-app.set('staticFolder', path.join(__dirname, 'resources/static'));
-app.set('templatesFolder', path.join(__dirname, 'resources/templates'));
+app.set('port', process.env.PORT || 3000);
+app.set('ip', ip.address());
+
+app.set('workDir', path.resolve(__dirname, '../www'));
+app.set('cacheDir', path.join(__dirname, 'cache'));
+app.set('compassDir', path.join(__dirname, 'resources/compass'));
+app.set('staticDir', path.join(__dirname, 'resources/static'));
+app.set('templatesDir', path.join(__dirname, 'resources/templates'));
 
 
 require('./boot')(app);

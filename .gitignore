@@ -1,6 +1,4 @@
-node_modules
 .idea
-.cache
-client/sites
+node_modules
+cache
 *.scss.css
-*.zip

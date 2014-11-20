@@ -1,10 +1,10 @@
-var utils = require('../lib/utils')
+var lib = require('../lib')
 
 module.exports = function(app) {
 
 	app.use(function (req, res) {
 
-		utils.error(req.originalUrl + '\nNOT FOUND', res);
+		lib.sendError(req.originalUrl + '\nNOT FOUND', res);
 
 	});
 

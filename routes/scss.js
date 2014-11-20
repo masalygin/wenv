@@ -1,6 +1,6 @@
 var sass = require('node-sass');
 var path = require('path');
-var utils = require('../lib/utils');
+var lib = require('../lib');
 
 module.exports = function (app) {
 
@@ -18,7 +18,7 @@ module.exports = function (app) {
 				res.sendfile(cssFile);
 			},
 			error: function(err) {
-				utils.error(scssFile + '\n' + err, res);
+				lib.sendError(scssFile + '\n' + err, res);
 			}
 		});
 
