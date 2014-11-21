@@ -9,7 +9,7 @@ module.exports = function (app) {
 	var cacheDir = app.get('cacheDir');
 	var sassDir = app.get('sassDir');
 
-	app.get(/^(.+\.scss\.css)$/, function (req, res) {
+	app.get(/^(.+\.scss\.css)(\?.*)?$/, function (req, res) {
 
 		var uri = url.parse(req.originalUrl);
 		var cssFile = path.join(cacheDir, 'site/images', uri.pathname.split('/images/')[1]);

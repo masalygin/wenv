@@ -44,11 +44,10 @@ module.exports = function (app) {
 	var prevDir = null;
 	var watcher = null;
 
-	var reload = _.debounce(function() {
+	var reload = _.debounce(function(type) {
 
 		if (app.socket) {
-			app.socket.emit('reload');
-			console.log('reload');
+			app.socket.emit('reload', type);
 		}
 
 	}, 500);
@@ -97,9 +96,15 @@ module.exports = function (app) {
 							lib.cache.sass.add(filepath);
 						}
 
+						reload(filepath);
+
+					} else {
+
+						reload();
+
 					}
 
-					reload();
+
 				}
 
 			});
