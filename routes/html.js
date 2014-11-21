@@ -46,9 +46,7 @@ module.exports = function (app) {
 
 	var reload = _.debounce(function(type) {
 
-		if (app.socket) {
-			app.socket.emit('reload', type);
-		}
+		app.io.emit('reload', type);
 
 	}, 500);
 

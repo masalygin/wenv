@@ -8,10 +8,6 @@ module.exports = function(app) {
 
 	io.listen(80);
 
-	io.on('connection', function (socket) {
-
-		app.socket = socket;
-
-	});
+	app.io = io;
 
 };

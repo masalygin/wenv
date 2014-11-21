@@ -28,14 +28,12 @@
 
 		counter++;
 
-		if (/.scss/.test(path)) {
+		if (/\.scss/.test(path)) {
 			scss(path);
 		} else {
 			document.location.reload();
 		}
 
 	});
-
-	document.querySelectorAll('link[href$=css]')
 
 })();
