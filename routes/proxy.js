@@ -15,8 +15,6 @@ module.exports = function(app) {
 		var u = url.resolve('http://dumper.demojs0.oml.ru/', uri.pathname);
 		var p = path.join(cacheDir, uri.pathname);
 
-		console.log(p);
-
 		extra.mkdirp(path.dirname(p), function(err) {
 
 			if (err) {

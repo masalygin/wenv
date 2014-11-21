@@ -1,1 +1,1 @@
-git pull && npm isntall && node app.js
+node app.js
