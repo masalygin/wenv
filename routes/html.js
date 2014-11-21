@@ -5,7 +5,8 @@ var url = require('url');
 var fs = require('fs-extra');
 var _ = require('lodash');
 var Smarty = require('../smarty');
-var Gaze = require('gaze');
+var chokidar = require('chokidar');
+
 
 function replace(text, aliases) {
 
@@ -43,6 +44,16 @@ module.exports = function (app) {
 	var prevDir = null;
 	var watcher = null;
 
+	var reload = _.debounce(function() {
+
+		if (app.socket) {
+			app.socket.emit('reload');
+			console.log('reload');
+		}
+
+	}, 500);
+
+
 	app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 		var uri = url.parse(req.originalUrl);
@@ -59,31 +70,43 @@ module.exports = function (app) {
 			return text;
 		};
 
-		if (prevDir !== dir) {
+		if (prevDir != dir) {
 
-			if (prevDir) {
+			if (watcher) {
 				watcher.close();
 			}
 
-			watcher = new Gaze('**/*', {
-				cwd: dir
+			lib.cache.sass.add(dir);
+
+			watcher = chokidar.watch(dir, {
+				ignored: /[\/\\]\./,
+				ignorePermissionErrors: true,
+				persistent: true
 			});
 
-			function reload() {
-				if (app.socket) {
-					app.socket.emit('reload');
-				}
-			}
-
 			watcher.on('all', function(event, filepath) {
-				reload();
+
+				if (event == 'add' || event == 'change' || event == 'unlink') {
+
+
+					if (/\.scss$/.test(filepath)) {
+
+						if (event == 'unlink') {
+							lib.cache.sass.remove(filepath);
+						} else {
+							lib.cache.sass.add(filepath);
+						}
+
+					}
+
+					reload();
+				}
+
 			});
 
 		}
 
 		prevDir = dir;
-
-		lib.sassToCache(dir, path.join(cacheDir, 'site'), '**/*.scss');
 
 
 		fs.readFile(filepath, function(err, buffer) {

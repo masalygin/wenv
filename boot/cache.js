@@ -1,5 +1,4 @@
 var fs = require('fs-extra');
-var glob = require('glob');
 var lib = require('../lib');
 var path = require('path');
 
@@ -9,6 +8,7 @@ module.exports = function(app) {
 	var staticDir = app.get('staticDir');
 
 	fs.removeSync(cacheDir);
-	lib.sassToCache(staticDir, cacheDir, '**/*.scss');
+	lib.cache.dir = cacheDir;
+	lib.cache.sass.add(staticDir);
 
 };
