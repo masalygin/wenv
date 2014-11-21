@@ -1,7 +1,7 @@
 
 
 
-<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+<script src="/g/libs/socket.io/1.2.0/socket.io.js"></script>
 {literal}
 <script>
 	(function() {
