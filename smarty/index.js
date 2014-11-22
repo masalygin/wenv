@@ -6,7 +6,6 @@
  * jSmart is licensed under the GNU Lesser General Public License
  * http://www.gnu.org/licenses/lgpl.html
  */
-
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
@@ -56,7 +55,7 @@ _.each([
 });
 
 
-templateData.regex_replace = function(subject, pattern, replacement) {
+templateData.regex_replace = function (subject, pattern, replacement) {
 	pattern = pattern.replace(/^\/|\/$/g, '');
 	var regexp = new RegExp(pattern, 'g');
 	return subject.replace(regexp, replacement);
@@ -149,8 +148,7 @@ function findTag(re, s) {
 				i = 0;
 			}
 			++openCount;
-		}
-		else if (s.substr(i, rdelim.length) == rdelim) {
+		} else if (s.substr(i, rdelim.length) == rdelim) {
 			if (skipInWS && i - 1 >= 0 && s.substr(i - 1, 1).match(/\s/)) {
 				continue;
 			}
@@ -178,8 +176,7 @@ function findCloseTag(reClose, reOpen, s) {
 	var openTag = null;
 	var findIndex = 0;
 
-	do
-	{
+	do {
 		if (closeTag) {
 			findIndex += closeTag[0].length;
 		}
@@ -209,8 +206,7 @@ function findElseTag(reOpen, reClose, reElse, s) {
 		if (!openTag || openTag.index > elseTag.index) {
 			elseTag.index += offset;
 			return elseTag;
-		}
-		else {
+		} else {
 			s = s.slice(openTag.index + openTag[0].length);
 			offset += openTag.index + openTag[0].length;
 			var closeTag = findCloseTag(reClose, reOpen, s);
@@ -223,13 +219,14 @@ function findElseTag(reOpen, reClose, reElse, s) {
 
 function execute(code, data) {
 	if (typeof(code) == 'string') {
-		with ({'__code': code}) {
+		with ({
+			'__code': code
+		}) {
 			with (modifiers) {
 				with (data) {
 					try {
 						return eval(__code);
-					}
-					catch (e) {
+					} catch (e) {
 						throw new Error(e.message + ' in \n' + code);
 					}
 				}
@@ -240,17 +237,15 @@ function execute(code, data) {
 }
 
 function assignVar(nm, val, data) {
-	if (nm.match(/\[\]$/))  //ar[] =
+	if (nm.match(/\[\]$/)) //ar[] =
 	{
 		data[nm.replace(/\[\]$/, '')].push(val);
-	}
-	else {
+	} else {
 		data[nm] = val;
 	}
 }
 
-var buildInFunctions =
-{
+var buildInFunctions = {
 	expression: {
 		parse: function (s, tree) {
 			var e = parseExpression(s);
@@ -272,7 +267,10 @@ var buildInFunctions =
 			if (findInArray(params, 'nofilter') < 0) {
 				for (var i = 0; i < default_modifiers.length; ++i) {
 					var m = default_modifiers[i];
-					m.params.__parsed[0] = {type: 'text', data: res};
+					m.params.__parsed[0] = {
+						type: 'text',
+						data: res
+					};
 					res = process([m], data);
 				}
 				if (escape_html) {
@@ -301,8 +299,7 @@ var buildInFunctions =
 				if (node.op == '=') {
 					getVarValue(node.params.__parsed[0], data, arg2);
 					return '';
-				}
-				else if (node.op.match(/(\+=|-=|\*=|\/=|%=)/)) {
+				} else if (node.op.match(/(\+=|-=|\*=|\/=|%=)/)) {
 					arg1 = getVarValue(node.params.__parsed[0], data);
 					switch (node.op) {
 						case '+=':
@@ -322,14 +319,11 @@ var buildInFunctions =
 							break;
 					}
 					return getVarValue(node.params.__parsed[0], data, arg1);
-				}
-				else if (node.op.match(/div/)) {
+				} else if (node.op.match(/div/)) {
 					return (node.op != 'div') ^ (arg1 % arg2 == 0);
-				}
-				else if (node.op.match(/even/)) {
+				} else if (node.op.match(/even/)) {
 					return (node.op != 'even') ^ ((arg1 / arg2) % 2 == 0);
-				}
-				else if (node.op.match(/xor/)) {
+				} else if (node.op.match(/xor/)) {
 					return (arg1 || arg2) && !(arg1 && arg2);
 				}
 
@@ -365,11 +359,9 @@ var buildInFunctions =
 					case '!==':
 						return arg1 !== arg2;
 				}
-			}
-			else if (node.op == '!') {
+			} else if (node.op == '!') {
 				return !arg1;
-			}
-			else {
+			} else {
 				var isVar = node.params.__parsed[0].type == 'var';
 				if (isVar) {
 					arg1 = getVarValue(node.params.__parsed[0], data);
@@ -390,8 +382,7 @@ var buildInFunctions =
 					if (isVar) {
 						getVarValue(node.params.__parsed[0], data, arg1);
 					}
-				}
-				else {
+				} else {
 					switch (node.op) {
 						case '++':
 							arg1++;
@@ -424,8 +415,7 @@ var buildInFunctions =
 			if (findElse) {
 				parse(content.slice(0, findElse.index), subTree);
 				parse(content.slice(findElse.index + findElse[0].length).replace(/^[\r\n]/, ''), subTreeElse);
-			}
-			else {
+			} else {
 				parse(content, subTree);
 			}
 		},
@@ -455,8 +445,7 @@ var buildInFunctions =
 				if (from < 0) {
 					from = 0;
 				}
-			}
-			else if (from >= to) {
+			} else if (from >= to) {
 				from = to ? to - 1 : 0;
 			}
 
@@ -467,7 +456,7 @@ var buildInFunctions =
 				loop = i;
 			}
 			props.total = count;
-			props.loop = count;  //? - because it is so in Smarty
+			props.loop = count; //? - because it is so in Smarty
 
 			count = 0;
 			var s = '';
@@ -543,8 +532,7 @@ var buildInFunctions =
 			if (findElse) {
 				parse(content.slice(0, findElse.index), subTree);
 				parse(content.slice(findElse.index + findElse[0].length), subTreeElse);
-			}
-			else {
+			} else {
 				parse(content, subTree);
 			}
 		},
@@ -604,12 +592,10 @@ var buildInFunctions =
 				var findElseIf = findElse[1].match(/^else\s*if(.*)/);
 				if (findElseIf) {
 					buildInFunctions['if'].parse(parseParams(findElseIf[1]), subTreeElse, content.replace(/^\n/, ''));
-				}
-				else {
+				} else {
 					parse(content.replace(/^\n/, ''), subTreeElse);
 				}
-			}
-			else {
+			} else {
 				parse(content, subTreeIf);
 			}
 		},
@@ -617,8 +603,7 @@ var buildInFunctions =
 		process: function (node, data) {
 			if (getActualParamValues(node.params, data)[0]) {
 				return process(node.subTreeIf, data);
-			}
-			else {
+			} else {
 				return process(node.subTreeElse, data);
 			}
 		}
@@ -654,8 +639,7 @@ var buildInFunctions =
 			if (findElse) {
 				parse(content.slice(0, findElse.index), subTree);
 				parse(content.slice(findElse.index + findElse[0].length).replace(/^[\r\n]/, ''), subTreeElse);
-			}
-			else {
+			} else {
 				parse(content, subTree);
 			}
 		},
@@ -725,8 +709,7 @@ var buildInFunctions =
 		type: 'block',
 		parse: function (params, tree, content) {
 			var subTree = [];
-			plugins[trimQuotes(params.name ? params.name : params[0])] =
-			{
+			plugins[trimQuotes(params.name ? params.name : params[0])] = {
 				type: 'function',
 				subTree: subTree,
 				defautParams: params,
@@ -783,7 +766,10 @@ var buildInFunctions =
 			if (!(blockName in blocks)) {
 				blocks[blockName] = [];
 			}
-			blocks[blockName].push({tree: tree, params: params});
+			blocks[blockName].push({
+				tree: tree,
+				params: params
+			});
 		},
 
 		process: function (node, data) {
@@ -815,11 +801,9 @@ var buildInFunctions =
 
 				if (blockAncestry[i].params.hasChild) {
 					data.smarty.block.child = s;
-				}
-				else if (append) {
+				} else if (append) {
 					data.smarty.block.child = s + data.smarty.block.child;
-				}
-				else if (prepend) {
+				} else if (prepend) {
 					data.smarty.block.child += s;
 				}
 				append = blockAncestry[i].params.append;
@@ -897,7 +881,7 @@ function parse(s, tree) {
 		s = s.slice(openTag.index + openTag[0].length);
 
 		var res = openTag[1].match(/^\s*(\w+)(.*)$/);
-		if (res)         //function
+		if (res) //function
 		{
 			var nm = res[1];
 			var paramStr = (res.length > 2) ? res[2].replace(/^\s+|\s+$/g, '') : '';
@@ -906,39 +890,34 @@ function parse(s, tree) {
 				var buildIn = buildInFunctions[nm];
 				var params = ('parseParams' in buildIn ? buildIn.parseParams : parseParams)(paramStr);
 				if (buildIn.type == 'block') {
-					s = s.replace(/^\n/, '');  //remove new line after block open tag (like in Smarty)
+					s = s.replace(/^\n/, ''); //remove new line after block open tag (like in Smarty)
 					var closeTag = findCloseTag('\/' + nm, nm + ' +[^}]*', s);
 					buildIn.parse(params, tree, s.slice(0, closeTag.index));
 					s = s.slice(closeTag.index + closeTag[0].length);
-				}
-				else {
+				} else {
 					buildIn.parse(params, tree);
 					if (nm == 'extends') {
 						tree = []; //throw away further parsing except for {block}
 					}
 				}
 				s = s.replace(/^\n/, '');
-			}
-			else if (nm in plugins) {
+			} else if (nm in plugins) {
 				var plugin = plugins[nm];
 				if (plugin.type == 'block') {
 					var closeTag = findCloseTag('\/' + nm, nm + ' +[^}]*', s);
 					parsePluginBlock(nm, parseParams(paramStr), tree, s.slice(0, closeTag.index));
 					s = s.slice(closeTag.index + closeTag[0].length);
-				}
-				else if (plugin.type == 'function') {
+				} else if (plugin.type == 'function') {
 					parsePluginFunc(nm, parseParams(paramStr), tree);
 				}
 				if (nm == 'append' || nm == 'assign' || nm == 'capture' || nm == 'eval' || nm == 'include') {
 					s = s.replace(/^\n/, '');
 				}
-			}
-			else   //variable
+			} else //variable
 			{
 				buildInFunctions.expression.parse(openTag[1], tree);
 			}
-		}
-		else         //variable
+		} else //variable
 		{
 			var node = buildInFunctions.expression.parse(openTag[1], tree);
 			if (node.type == 'build-in' && node.name == 'operator' && node.op == '=') {
@@ -956,12 +935,18 @@ function parseText(text, tree) {
 	if (parseText.parseEmbeddedVars) {
 		var re = /([$][\w@]+)|`([^`]*)`/;
 		for (var found = re.exec(text); found; found = re.exec(text)) {
-			tree.push({type: 'text', data: text.slice(0, found.index)});
+			tree.push({
+				type: 'text',
+				data: text.slice(0, found.index)
+			});
 			tree.push(parseExpression(found[1] ? found[1] : found[2]).tree);
 			text = text.slice(found.index + found[0].length);
 		}
 	}
-	tree.push({type: 'text', data: text});
+	tree.push({
+		type: 'text',
+		data: text
+	});
 	return tree;
 }
 
@@ -998,7 +983,10 @@ function parseVar(s, e, nm) {
 		e.token += op[0];
 		s = s.slice(op[0].length);
 
-		var eProp = {value: '', tree: []};
+		var eProp = {
+			value: '',
+			tree: []
+		};
 		if (op[0].match(/\[/)) {
 			eProp = parseExpression(s);
 			if (eProp) {
@@ -1012,8 +1000,7 @@ function parseVar(s, e, nm) {
 				e.token += closeOp[0];
 				s = s.slice(closeOp[0].length);
 			}
-		}
-		else {
+		} else {
 			var parseMod = parseModifiers.stop;
 			parseModifiers.stop = true;
 			if (lookUp(s, eProp)) {
@@ -1024,19 +1011,24 @@ function parseVar(s, e, nm) {
 				}
 				parts.push(part);
 				s = s.slice(eProp.value.length);
-			}
-			else {
+			} else {
 				eProp = false;
 			}
 			parseModifiers.stop = parseMod;
 		}
 
 		if (!eProp) {
-			parts.push({type: 'text', data: ''});
+			parts.push({
+				type: 'text',
+				data: ''
+			});
 		}
 	}
 
-	e.tree.push({type: 'var', parts: parts});
+	e.tree.push({
+		type: 'var',
+		parts: parts
+	});
 
 	e.value += e.token.substr(rootName.length);
 
@@ -1049,244 +1041,219 @@ function onParseVar(nm) {
 }
 
 
-var tokens =
-	[
-		{
-			re: /^\$([\w@]+)/,   //var
-			parse: function (e, s) {
-				parseModifiers(parseVar(s, e, RegExp.$1), e);
-			}
-		},
-		{
-			re: /^(true|false)/i,  //bool
-			parse: function (e, s) {
-				parseText(e.token.match(/true/i) ? '1' : '', e.tree);
-			}
-		},
-		{
-			re: /^'([^'\\]*(?:\\.[^'\\]*)*)'/, //single quotes
-			parse: function (e, s) {
-				parseText(evalString(RegExp.$1), e.tree);
-				parseModifiers(s, e);
-			}
-		},
-		{
-			re: /^"([^"\\]*(?:\\.[^"\\]*)*)"/,  //double quotes
-			parse: function (e, s) {
-				var v = evalString(RegExp.$1);
-				var isVar = v.match(tokens[0].re);
-				if (isVar) {
-					var eVar = {token: isVar[0], tree: []};
-					parseVar(v, eVar, isVar[1]);
-					if (eVar.token.length == v.length) {
-						e.tree.push(eVar.tree[0]);
-						return;
-					}
-				}
-				parseText.parseEmbeddedVars = true;
-				e.tree.push({
-					type: 'plugin',
-					name: '__quoted',
-					params: {__parsed: parse(v, [])}
-				});
-				parseText.parseEmbeddedVars = false;
-				parseModifiers(s, e);
-			}
-		},
-		{
-			re: /^(\w+)\s*[(]([)]?)/,  //func()
-			parse: function (e, s) {
-				var fnm = RegExp.$1;
-				var noArgs = RegExp.$2;
-				var params = parseParams(noArgs ? '' : s, /^\s*,\s*/);
-				parseFunc(fnm, params, e.tree);
-				e.value += params.toString();
-				parseModifiers(s.slice(params.toString().length), e);
-			}
-		},
-		{
-			re: /^\s*\(\s*/,  //expression in parentheses
-			parse: function (e, s) {
-				var parens = [];
-				e.tree.push(parens);
-				parens.parent = e.tree;
-				e.tree = parens;
-			}
-		},
-		{
-			re: /^\s*\)\s*/,
-			parse: function (e, s) {
-				if (e.tree.parent) //it may be the end of func() or (expr)
-				{
-					e.tree = e.tree.parent;
-				}
-			}
-		},
-		{
-			re: /^\s*(\+\+|--)\s*/,
-			parse: function (e, s) {
-				if (e.tree.length && e.tree[e.tree.length - 1].type == 'var') {
-					parseOperator(RegExp.$1, 'post-unary', 1, e.tree);
-				}
-				else {
-					parseOperator(RegExp.$1, 'pre-unary', 1, e.tree);
-				}
-			}
-		},
-		{
-			re: /^\s*(===|!==|==|!=)\s*/,
-			parse: function (e, s) {
-				parseOperator(RegExp.$1, 'binary', 6, e.tree);
-			}
-		},
-		{
-			re: /^\s+(eq|ne|neq)\s+/i,
-			parse: function (e, s) {
-				var op = RegExp.$1.replace(/ne(q)?/, '!=').replace(/eq/, '==');
-				parseOperator(op, 'binary', 6, e.tree);
-			}
-		},
-		{
-			re: /^\s*!\s*/,
-			parse: function (e, s) {
-				parseOperator('!', 'pre-unary', 2, e.tree);
-			}
-		},
-		{
-			re: /^\s+not\s+/i,
-			parse: function (e, s) {
-				parseOperator('!', 'pre-unary', 2, e.tree);
-			}
-		},
-		{
-			re: /^\s*(=|\+=|-=|\*=|\/=|%=)\s*/,
-			parse: function (e, s) {
-				parseOperator(RegExp.$1, 'binary', 10, e.tree);
-			}
-		},
-		{
-			re: /^\s*(\*|\/|%)\s*/,
-			parse: function (e, s) {
-				parseOperator(RegExp.$1, 'binary', 3, e.tree);
-			}
-		},
-		{
-			re: /^\s+mod\s+/i,
-			parse: function (e, s) {
-				parseOperator('%', 'binary', 3, e.tree);
-			}
-		},
-		{
-			re: /^\s*(\+|-)\s*/,
-			parse: function (e, s) {
-				if (!e.tree.length || e.tree[e.tree.length - 1].name == 'operator') {
-					parseOperator(RegExp.$1, 'pre-unary', 4, e.tree);
-				}
-				else {
-					parseOperator(RegExp.$1, 'binary', 4, e.tree);
-				}
-			}
-		},
-		{
-			re: /^\s*(<=|>=|<>|<|>)\s*/,
-			parse: function (e, s) {
-				parseOperator(RegExp.$1.replace(/<>/, '!='), 'binary', 5, e.tree);
-			}
-		},
-		{
-			re: /^\s+(lt|lte|le|gt|gte|ge)\s+/i,
-			parse: function (e, s) {
-				var op = RegExp.$1.replace(/lt/, '<').replace(/l(t)?e/, '<=').replace(/gt/, '>').replace(/g(t)?e/, '>=');
-				parseOperator(op, 'binary', 5, e.tree);
-			}
-		},
-		{
-			re: /^\s+(is\s+(not\s+)?div\s+by)\s+/i,
-			parse: function (e, s) {
-				parseOperator(RegExp.$2 ? 'div_not' : 'div', 'binary', 7, e.tree);
-			}
-		},
-		{
-			re: /^\s+is\s+(not\s+)?(even|odd)(\s+by\s+)?\s*/i,
-			parse: function (e, s) {
-				var op = RegExp.$1 ? ((RegExp.$2 == 'odd') ? 'even' : 'even_not') : ((RegExp.$2 == 'odd') ? 'even_not' : 'even');
-				parseOperator(op, 'binary', 7, e.tree);
-				if (!RegExp.$3) {
-					parseText('1', e.tree);
-				}
-			}
-		},
-		{
-			re: /^\s*(&&)\s*/,
-			parse: function (e, s) {
-				parseOperator(RegExp.$1, 'binary', 8, e.tree);
-			}
-		},
-		{
-			re: /^\s*(\|\|)\s*/,
-			parse: function (e, s) {
-				parseOperator(RegExp.$1, 'binary', 9, e.tree);
-			}
-		},
-		{
-			re: /^\s+and\s+/i,
-			parse: function (e, s) {
-				parseOperator('&&', 'binary', 11, e.tree);
-			}
-		},
-		{
-			re: /^\s+xor\s+/i,
-			parse: function (e, s) {
-				parseOperator('xor', 'binary', 12, e.tree);
-			}
-		},
-		{
-			re: /^\s+or\s+/i,
-			parse: function (e, s) {
-				parseOperator('||', 'binary', 13, e.tree);
-			}
-		},
-		{
-			re: /^#(\w+)#/,  //config variable
-			parse: function (e, s) {
-				var eVar = {token: '$smarty', tree: []};
-				parseVar('.config.' + RegExp.$1, eVar, 'smarty');
+var tokens = [{
+	re: /^\$([\w@]+)/, //var
+	parse: function (e, s) {
+		parseModifiers(parseVar(s, e, RegExp.$1), e);
+	}
+}, {
+	re: /^(true|false)/i, //bool
+	parse: function (e, s) {
+		parseText(e.token.match(/true/i) ? '1' : '', e.tree);
+	}
+}, {
+	re: /^'([^'\\]*(?:\\.[^'\\]*)*)'/, //single quotes
+	parse: function (e, s) {
+		parseText(evalString(RegExp.$1), e.tree);
+		parseModifiers(s, e);
+	}
+}, {
+	re: /^"([^"\\]*(?:\\.[^"\\]*)*)"/, //double quotes
+	parse: function (e, s) {
+		var v = evalString(RegExp.$1);
+		var isVar = v.match(tokens[0].re);
+		if (isVar) {
+			var eVar = {
+				token: isVar[0],
+				tree: []
+			};
+			parseVar(v, eVar, isVar[1]);
+			if (eVar.token.length == v.length) {
 				e.tree.push(eVar.tree[0]);
-				parseModifiers(s, e);
-			}
-		},
-		{
-			re: /^\s*\[\s*/,   //array
-			parse: function (e, s) {
-				var params = parseParams(s, /^\s*,\s*/, /^('[^'\\]*(?:\\.[^'\\]*)*'|"[^"\\]*(?:\\.[^"\\]*)*"|\w+)\s*=>\s*/);
-				parsePluginFunc('__array', params, e.tree);
-				e.value += params.toString();
-				var paren = s.slice(params.toString().length).match(/\s*\]/);
-				if (paren) {
-					e.value += paren[0];
-				}
-			}
-		},
-		{
-			re: /^[\d.]+/, //number
-			parse: function (e, s) {
-				if (e.token.indexOf('.') > -1) {
-					e.token = parseFloat(e.token);
-				} else {
-					e.token = parseInt(e.token, 10);
-				}
-				parseText(e.token, e.tree);
-				parseModifiers(s, e);
-			}
-		},
-		{
-			re: /^\w+/, //static
-			parse: function (e, s) {
-				parseText(e.token, e.tree);
-				parseModifiers(s, e);
+				return;
 			}
 		}
-	];
+		parseText.parseEmbeddedVars = true;
+		e.tree.push({
+			type: 'plugin',
+			name: '__quoted',
+			params: {
+				__parsed: parse(v, [])
+			}
+		});
+		parseText.parseEmbeddedVars = false;
+		parseModifiers(s, e);
+	}
+}, {
+	re: /^(\w+)\s*[(]([)]?)/, //func()
+	parse: function (e, s) {
+		var fnm = RegExp.$1;
+		var noArgs = RegExp.$2;
+		var params = parseParams(noArgs ? '' : s, /^\s*,\s*/);
+		parseFunc(fnm, params, e.tree);
+		e.value += params.toString();
+		parseModifiers(s.slice(params.toString().length), e);
+	}
+}, {
+	re: /^\s*\(\s*/, //expression in parentheses
+	parse: function (e, s) {
+		var parens = [];
+		e.tree.push(parens);
+		parens.parent = e.tree;
+		e.tree = parens;
+	}
+}, {
+	re: /^\s*\)\s*/,
+	parse: function (e, s) {
+		if (e.tree.parent) //it may be the end of func() or (expr)
+		{
+			e.tree = e.tree.parent;
+		}
+	}
+}, {
+	re: /^\s*(\+\+|--)\s*/,
+	parse: function (e, s) {
+		if (e.tree.length && e.tree[e.tree.length - 1].type == 'var') {
+			parseOperator(RegExp.$1, 'post-unary', 1, e.tree);
+		} else {
+			parseOperator(RegExp.$1, 'pre-unary', 1, e.tree);
+		}
+	}
+}, {
+	re: /^\s*(===|!==|==|!=)\s*/,
+	parse: function (e, s) {
+		parseOperator(RegExp.$1, 'binary', 6, e.tree);
+	}
+}, {
+	re: /^\s+(eq|ne|neq)\s+/i,
+	parse: function (e, s) {
+		var op = RegExp.$1.replace(/ne(q)?/, '!=').replace(/eq/, '==');
+		parseOperator(op, 'binary', 6, e.tree);
+	}
+}, {
+	re: /^\s*!\s*/,
+	parse: function (e, s) {
+		parseOperator('!', 'pre-unary', 2, e.tree);
+	}
+}, {
+	re: /^\s+not\s+/i,
+	parse: function (e, s) {
+		parseOperator('!', 'pre-unary', 2, e.tree);
+	}
+}, {
+	re: /^\s*(=|\+=|-=|\*=|\/=|%=)\s*/,
+	parse: function (e, s) {
+		parseOperator(RegExp.$1, 'binary', 10, e.tree);
+	}
+}, {
+	re: /^\s*(\*|\/|%)\s*/,
+	parse: function (e, s) {
+		parseOperator(RegExp.$1, 'binary', 3, e.tree);
+	}
+}, {
+	re: /^\s+mod\s+/i,
+	parse: function (e, s) {
+		parseOperator('%', 'binary', 3, e.tree);
+	}
+}, {
+	re: /^\s*(\+|-)\s*/,
+	parse: function (e, s) {
+		if (!e.tree.length || e.tree[e.tree.length - 1].name == 'operator') {
+			parseOperator(RegExp.$1, 'pre-unary', 4, e.tree);
+		} else {
+			parseOperator(RegExp.$1, 'binary', 4, e.tree);
+		}
+	}
+}, {
+	re: /^\s*(<=|>=|<>|<|>)\s*/,
+	parse: function (e, s) {
+		parseOperator(RegExp.$1.replace(/<>/, '!='), 'binary', 5, e.tree);
+	}
+}, {
+	re: /^\s+(lt|lte|le|gt|gte|ge)\s+/i,
+	parse: function (e, s) {
+		var op = RegExp.$1.replace(/lt/, '<').replace(/l(t)?e/, '<=').replace(/gt/, '>').replace(/g(t)?e/, '>=');
+		parseOperator(op, 'binary', 5, e.tree);
+	}
+}, {
+	re: /^\s+(is\s+(not\s+)?div\s+by)\s+/i,
+	parse: function (e, s) {
+		parseOperator(RegExp.$2 ? 'div_not' : 'div', 'binary', 7, e.tree);
+	}
+}, {
+	re: /^\s+is\s+(not\s+)?(even|odd)(\s+by\s+)?\s*/i,
+	parse: function (e, s) {
+		var op = RegExp.$1 ? ((RegExp.$2 == 'odd') ? 'even' : 'even_not') : ((RegExp.$2 == 'odd') ? 'even_not' : 'even');
+		parseOperator(op, 'binary', 7, e.tree);
+		if (!RegExp.$3) {
+			parseText('1', e.tree);
+		}
+	}
+}, {
+	re: /^\s*(&&)\s*/,
+	parse: function (e, s) {
+		parseOperator(RegExp.$1, 'binary', 8, e.tree);
+	}
+}, {
+	re: /^\s*(\|\|)\s*/,
+	parse: function (e, s) {
+		parseOperator(RegExp.$1, 'binary', 9, e.tree);
+	}
+}, {
+	re: /^\s+and\s+/i,
+	parse: function (e, s) {
+		parseOperator('&&', 'binary', 11, e.tree);
+	}
+}, {
+	re: /^\s+xor\s+/i,
+	parse: function (e, s) {
+		parseOperator('xor', 'binary', 12, e.tree);
+	}
+}, {
+	re: /^\s+or\s+/i,
+	parse: function (e, s) {
+		parseOperator('||', 'binary', 13, e.tree);
+	}
+}, {
+	re: /^#(\w+)#/, //config variable
+	parse: function (e, s) {
+		var eVar = {
+			token: '$smarty',
+			tree: []
+		};
+		parseVar('.config.' + RegExp.$1, eVar, 'smarty');
+		e.tree.push(eVar.tree[0]);
+		parseModifiers(s, e);
+	}
+}, {
+	re: /^\s*\[\s*/, //array
+	parse: function (e, s) {
+		var params = parseParams(s, /^\s*,\s*/, /^('[^'\\]*(?:\\.[^'\\]*)*'|"[^"\\]*(?:\\.[^"\\]*)*"|\w+)\s*=>\s*/);
+		parsePluginFunc('__array', params, e.tree);
+		e.value += params.toString();
+		var paren = s.slice(params.toString().length).match(/\s*\]/);
+		if (paren) {
+			e.value += paren[0];
+		}
+	}
+}, {
+	re: /^[\d.]+/, //number
+	parse: function (e, s) {
+		if (e.token.indexOf('.') > -1) {
+			e.token = parseFloat(e.token);
+		} else {
+			e.token = parseInt(e.token, 10);
+		}
+		parseText(e.token, e.tree);
+		parseModifiers(s, e);
+	}
+}, {
+	re: /^\w+/, //static
+	parse: function (e, s) {
+		parseText(e.token, e.tree);
+		parseModifiers(s, e);
+	}
+}];
 
 function parseModifiers(s, e) {
 	if (parseModifiers.stop) {
@@ -1309,22 +1276,26 @@ function parseModifiers(s, e) {
 		e.value += s.slice(0, colon[0].length);
 		s = s.slice(colon[0].length);
 
-		var param = {value: '', tree: []};
+		var param = {
+			value: '',
+			tree: []
+		};
 		if (lookUp(s, param)) {
 			e.value += param.value;
 			params.push(param.tree[0]);
 			s = s.slice(param.value.length);
-		}
-		else {
+		} else {
 			parseText('', params);
 		}
 	}
 	parseModifiers.stop = false;
 
-	params.unshift(e.tree.pop());  //modifiers have the highest priority
-	e.tree.push(parseFunc(fnm, {__parsed: params}, [])[0]);
+	params.unshift(e.tree.pop()); //modifiers have the highest priority
+	e.tree.push(parseFunc(fnm, {
+		__parsed: params
+	}, [])[0]);
 
-	parseModifiers(s, e);  //modifiers can be combined
+	parseModifiers(s, e); //modifiers can be combined
 }
 
 function lookUp(s, e) {
@@ -1361,8 +1332,7 @@ function bundleOp(i, tree, precedence) {
 			op.params.__parsed = [tree[i - 1], tree[i + 1]];
 			tree.splice(i - 1, 3, op);
 			return true;
-		}
-		else if (op.optype == 'post-unary') {
+		} else if (op.optype == 'post-unary') {
 			op.params.__parsed = [tree[i - 1]];
 			tree.splice(i - 1, 2, op);
 			return true;
@@ -1387,8 +1357,7 @@ function composeExpression(tree) {
 			for (i = tree.length; i > 0; --i) {
 				i -= bundleOp(i - 1, tree, precedence);
 			}
-		}
-		else {
+		} else {
 			for (i = 0; i < tree.length; ++i) {
 				i -= bundleOp(i, tree, precedence);
 			}
@@ -1398,7 +1367,10 @@ function composeExpression(tree) {
 }
 
 function parseExpression(s) {
-	var e = {value: '', tree: []};
+	var e = {
+		value: '',
+		tree: []
+	};
 	while (lookUp(s.slice(e.value.length), e)) {
 	}
 	if (!e.tree.length) {
@@ -1442,8 +1414,7 @@ function parseParams(paramsStr, reDelim, reName) {
 		if (nm) {
 			params[nm] = param.value;
 			params.__parsed[nm] = param.tree;
-		}
-		else {
+		} else {
 			params.push(param.value);
 			params.__parsed.push(param.tree);
 		}
@@ -1455,8 +1426,7 @@ function parseParams(paramsStr, reDelim, reName) {
 		if (foundDelim) {
 			paramsStr += s.slice(0, foundDelim[0].length);
 			s = s.slice(foundDelim[0].length);
-		}
-		else {
+		} else {
 			break;
 		}
 	}
@@ -1516,8 +1486,7 @@ function getVarValue(node, data, val) {
 			data.__owner = v;
 			v = process([node.parts[i]], data);
 			delete data.__owner;
-		}
-		else {
+		} else {
 			nm = process([part], data);
 
 			//section name
@@ -1537,8 +1506,7 @@ function getVarValue(node, data, val) {
 
 			if (typeof v == 'object' && v !== null && nm in v) {
 				v = v[nm];
-			}
-			else {
+			} else {
 				if (typeof val == 'undefined') {
 					return val;
 				}
@@ -1557,17 +1525,16 @@ function process(tree, data) {
 		var node = tree[i];
 		if (node.type == 'text') {
 			s = node.data;
-		}
-		else if (node.type == 'var') {
+		} else if (node.type == 'var') {
 			s = getVarValue(node, data);
-		}
-		else if (node.type == 'build-in') {
+		} else if (node.type == 'build-in') {
 			s = buildInFunctions[node.name].process(node, data);
-		}
-		else if (node.type == 'plugin') {
+		} else if (node.type == 'plugin') {
 			var plugin = plugins[node.name];
 			if (plugin.type == 'block') {
-				var repeat = {value: true};
+				var repeat = {
+					value: true
+				};
 				plugin.process(getActualParamValues(node.params, data), '', data, repeat);
 				while (repeat.value) {
 					repeat.value = false;
@@ -1578,8 +1545,7 @@ function process(tree, data) {
 						repeat
 					);
 				}
-			}
-			else if (plugin.type == 'function') {
+			} else if (plugin.type == 'function') {
 				s = plugin.process(getActualParamValues(node.params, data), data);
 			}
 		}
@@ -1606,8 +1572,7 @@ function getTemplate(name, tree, nocache) {
 		}
 		parse(applyFilters(jSmart.prototype.filters_global.pre, stripComments(tpl.replace(/\r\n/g, '\n'))), tree);
 		files[name] = tree;
-	}
-	else {
+	} else {
 		tree = files[name];
 	}
 	return tree;
@@ -1640,7 +1605,10 @@ var jSmart = function (tpl, data) {
 	this.tree.blocks = {};
 	this.scripts = {};
 	this.default_modifiers = [];
-	this.filters = {'variable': [], 'post': []};
+	this.filters = {
+		'variable': [],
+		'post': []
+	};
 
 	this.smarty = defaultsDeep({}, {
 		'smarty': {
@@ -1693,9 +1661,11 @@ jSmart.prototype.escape_html = false;
 jSmart.prototype.registerPlugin = function (type, name, callback) {
 	if (type == 'modifier') {
 		modifiers[name] = callback;
-	}
-	else {
-		plugins[name] = {'type': type, 'process': callback};
+	} else {
+		plugins[name] = {
+			'type': type,
+			'process': callback
+		};
 	}
 };
 
@@ -1707,7 +1677,11 @@ jSmart.prototype.registerFilter = function (type, callback) {
 	(this.tree ? this.filters : jSmart.prototype.filters_global)[type == 'output' ? 'post' : type].push(callback);
 }
 
-jSmart.prototype.filters_global = {'pre': [], 'variable': [], 'post': []};
+jSmart.prototype.filters_global = {
+	'pre': [],
+	'variable': [],
+	'post': []
+};
 
 jSmart.prototype.configLoad = function (confValues, section, data) {
 	data = data ? data : this.data;
@@ -1718,24 +1692,21 @@ jSmart.prototype.configLoad = function (confValues, section, data) {
 		s = s.slice(f.index + f[0].length);
 		if (f[1]) {
 			currSect = f[1];
-		}
-		else if ((!currSect || currSect == section) && currSect.substr(0, 1) != '.') {
+		} else if ((!currSect || currSect == section) && currSect.substr(0, 1) != '.') {
 			if (f[3] == '"""') {
 				var triple = s.match(/"""/);
 				if (triple) {
 					data.smarty.config[f[2]] = s.slice(0, triple.index);
 					s = s.slice(triple.index + triple[0].length);
 				}
-			}
-			else {
+			} else {
 				data.smarty.config[f[2]] = trimQuotes(f[3]);
 			}
 		}
 		var newln = s.match(/\n+/);
 		if (newln) {
 			s = s.slice(newln.index + newln[0].length);
-		}
-		else {
+		} else {
 			break;
 		}
 	}
@@ -1744,8 +1715,7 @@ jSmart.prototype.configLoad = function (confValues, section, data) {
 jSmart.prototype.clearConfig = function (varName) {
 	if (varName) {
 		delete this.data.smarty.config[varName];
-	}
-	else {
+	} else {
 		this.data.smarty.config = {};
 	}
 }
@@ -1761,7 +1731,10 @@ jSmart.prototype.addDefaultModifier = function (modifiers) {
 	}
 
 	for (var i = 0; i < modifiers.length; ++i) {
-		var e = {value: '', tree: [0]};
+		var e = {
+			value: '',
+			tree: [0]
+		};
 		parseModifiers('|' + modifiers[i], e);
 		(this.tree ? this.default_modifiers : this.default_modifiers_global).push(e.tree[0]);
 	}
@@ -1874,8 +1847,7 @@ jSmart.prototype.debugging = false;
 jSmart.prototype.PHPJS = function (fnm, modifier) {
 	if (eval('typeof ' + fnm) == 'function') {
 		return (typeof window == 'object') ? window : global;
-	}
-	else if (typeof(PHP_JS) == 'function') {
+	} else if (typeof(PHP_JS) == 'function') {
 		return new PHP_JS();
 	}
 	throw new Error("Modifier '" + modifier + "' uses JavaScript port of PHP function '" + fnm + "'. You can find one at http://phpjs.org");
@@ -1895,7 +1867,7 @@ jSmart.prototype.makeTimeStamp = function (s) {
 	s = new String(s);
 	if (s.length == 14) //mysql timestamp format of YYYYMMDDHHMMSS
 	{
-		return Math.floor((new Date(s.substr(0, 4), s.substr(4, 2) - 1, s.substr(6, 2), s.substr(8, 2), s.substr(10, 2)).getTime() / 1000 ));
+		return Math.floor((new Date(s.substr(0, 4), s.substr(4, 2) - 1, s.substr(6, 2), s.substr(8, 2), s.substr(10, 2)).getTime() / 1000));
 	}
 	return parseInt(s);
 }
@@ -1953,8 +1925,7 @@ jSmart.prototype.registerPlugin(
 		var val = params.__get('value', null, 1);
 		if (index === false) {
 			data[varName].push(val);
-		}
-		else {
+		} else {
 			data[varName][index] = val;
 		}
 		return '';
@@ -2014,8 +1985,7 @@ jSmart.prototype.registerPlugin(
 					if (data[append] instanceof Array) {
 						data[append].push(content);
 					}
-				}
-				else {
+				} else {
 					data[append] = [content];
 				}
 			}
@@ -2042,22 +2012,19 @@ jSmart.prototype.registerPlugin(
 			var counter = data.smarty.counter[name];
 			if ('start' in params) {
 				counter.value = parseInt(params['start']);
-			}
-			else {
+			} else {
 				counter.value = parseInt(counter.value);
 				counter.skip = parseInt(counter.skip);
 				if ('down' == counter.direction) {
 					counter.value -= counter.skip;
-				}
-				else {
+				} else {
 					counter.value += counter.skip;
 				}
 			}
 			counter.skip = params.__get('skip', counter.skip);
 			counter.direction = params.__get('direction', counter.direction);
 			counter.assign = params.__get('assign', counter.assign);
-		}
-		else {
+		} else {
 			data.smarty.counter[name] = {
 				value: parseInt(params.__get('start', 1)),
 				skip: parseInt(params.__get('skip', 1)),
@@ -2086,7 +2053,11 @@ jSmart.prototype.registerPlugin(
 		var name = params.__get('name', 'default');
 		var reset = params.__get('reset', false);
 		if (!(name in data.smarty.cycle)) {
-			data.smarty.cycle[name] = {arr: [''], delimiter: params.__get('delimiter', ','), index: 0};
+			data.smarty.cycle[name] = {
+				arr: [''],
+				delimiter: params.__get('delimiter', ','),
+				index: 0
+			};
 			reset = true;
 		}
 
@@ -2100,8 +2071,7 @@ jSmart.prototype.registerPlugin(
 				for (nm in values) {
 					arr.push(values[nm]);
 				}
-			}
-			else {
+			} else {
 				arr = values.split(data.smarty.cycle[name].delimiter);
 			}
 
@@ -2241,7 +2211,7 @@ jSmart.prototype.registerPlugin(
 			if (values.hasOwnProperty(p)) {
 				value = (useName ? p : values[p]);
 				id = realName + '_' + value;
-				s = (labels ? ( label_ids ? '<label for="' + id + '">' : '<label>') : '');
+				s = (labels ? (label_ids ? '<label for="' + id + '">' : '<label>') : '');
 
 				s += '<input type="' + type + '" name="' + name + '" value="' + value + '" ';
 				if (label_ids) {
@@ -2274,7 +2244,16 @@ jSmart.prototype.registerPlugin(
 			alt = params.__get('alt', ''),
 			href = params.__get('href', params.__get('link', false)),
 			path_prefix = params.__get('path_prefix', ''),
-			paramNames = {file: 1, width: 1, height: 1, alt: 1, href: 1, basedir: 1, path_prefix: 1, link: 1},
+			paramNames = {
+				file: 1,
+				width: 1,
+				height: 1,
+				alt: 1,
+				href: 1,
+				basedir: 1,
+				path_prefix: 1,
+				link: 1
+			},
 			s = '<img src="' + path_prefix + url + '"' + ' alt="' + alt + '"' + (width ? ' width="' + width + '"' : '') + (height ? ' height="' + height + '"' : ''),
 			p;
 
@@ -2364,8 +2343,7 @@ jSmart.prototype.registerPlugin(
 		var p;
 		if (params.loop instanceof Array) {
 			loop = params.loop
-		}
-		else {
+		} else {
 			for (p in params.loop) {
 				if (params.loop.hasOwnProperty(p)) {
 					loop.push(params.loop[p]);
@@ -2385,8 +2363,7 @@ jSmart.prototype.registerPlugin(
 						colNames.push(cols[p]);
 					}
 				}
-			}
-			else {
+			} else {
 				colNames = cols.split(/\s*,\s*/);
 			}
 			cols = colNames.length;
@@ -2461,7 +2438,9 @@ jSmart.prototype.registerPlugin(
 			return '';
 		}
 		scripts[file] = true;
-		var s = execute(jSmart.prototype.getJavascript(file), {'$this': data});
+		var s = execute(jSmart.prototype.getJavascript(file), {
+			'$this': data
+		});
 		if ('assign' in params) {
 			assignVar(params.assign, s, data);
 			return '';
@@ -2552,16 +2531,13 @@ jSmart.prototype.registerPlugin(
 				sEncoded += '%' + jSmart.prototype.PHPJS('bin2hex', 'mailto').bin2hex(s.substr(i, 1));
 			}
 			return '<script type="text/javascript">eval(unescape(\'' + sEncoded + "'))</script>";
-		}
-		else if (encode == 'javascript_charcode') {
+		} else if (encode == 'javascript_charcode') {
 			var codes = [];
 			for (var i = 0; i < s.length; ++i) {
 				codes.push(jSmart.prototype.PHPJS('ord', 'mailto').ord(s.substr(i, 1)));
 			}
-			return '<script type="text/javascript" language="javascript">\n<!--\n{document.write(String.fromCharCode('
-				+ codes.join(',') + '))}\n//-->\n</script>\n';
-		}
-		else if (encode == 'hex') {
+			return '<script type="text/javascript" language="javascript">\n<!--\n{document.write(String.fromCharCode(' + codes.join(',') + '))}\n//-->\n</script>\n';
+		} else if (encode == 'hex') {
 			if (address.match(/^.+\?.+$/)) {
 				throw new Error('mailto: hex encoding does not work with extra attributes. Try javascript.');
 			}
@@ -2569,8 +2545,7 @@ jSmart.prototype.registerPlugin(
 			for (var i = 0; i < address.length; ++i) {
 				if (address.substr(i, 1).match(/\w/)) {
 					aEncoded += '%' + jSmart.prototype.PHPJS('bin2hex', 'mailto').bin2hex(address.substr(i, 1));
-				}
-				else {
+				} else {
 					aEncoded += address.substr(i, 1);
 				}
 			}
@@ -2677,8 +2652,7 @@ jSmart.prototype.registerPlugin(
 			var word = s.slice(0, found.index);
 			if (word.match(/\d/)) {
 				res += word;
-			}
-			else {
+			} else {
 				res += word.charAt(0).toUpperCase() + word.slice(1);
 			}
 			res += s.slice(found.index, found.index + found[0].length);
@@ -3032,7 +3006,7 @@ jSmart.prototype.registerPlugin(
 					pos += found.index + found[0].length;
 				}
 				pos = pos || (breakWords ? width : (found ? found.index + found[0].length : line.length));
-				parts += line.slice(0, pos).replace(/\s+$/, '');// + wrapWith;
+				parts += line.slice(0, pos).replace(/\s+$/, ''); // + wrapWith;
 				if (pos < line.length) {
 					parts += wrapWith;
 				}
