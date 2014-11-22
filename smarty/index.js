@@ -15,6 +15,7 @@ var php = require('phpjs');
 
 
 _.each([
+
 	'strpos',
 	'isset',
 	'count',
@@ -26,10 +27,40 @@ _.each([
 	'strtotime',
 	'strval',
 	'empty',
-	'array'
+	'array',
+
+	'abs',
+	'trim',
+	'round',
+	'floor',
+	'ceil',
+	'unserialize',
+	'strip_tags',
+	'stripslashes',
+	'json_encode',
+	'json_decode',
+	'htmlspecialchars',
+	'htmlspecialchars_decode',
+	'nl2br',
+	'urlencode',
+	'explode',
+	'implode',
+	'count',
+	'md5',
+	'sha1',
+	'base64_encode',
+	'sprintf'
+
 ], function (val) {
 	templateData[val] = php[val];
 });
+
+
+templateData.regex_replace = function(subject, pattern, replacement) {
+	pattern = pattern.replace(/^\/|\/$/g, '');
+	var regexp = new RegExp(pattern, 'g');
+	return subject.replace(regexp, replacement);
+};
 
 
 var defaultsDeep = _.partialRight(_.merge, function deep(value, other) {
