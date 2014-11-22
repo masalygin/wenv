@@ -7,15 +7,29 @@
  * http://www.gnu.org/licenses/lgpl.html
  */
 
-/**
- merges two or more objects into one
- shallow copy for objects
- */
-
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
-var templateData = require('./data')
+var templateData = require('./data');
+var php = require('phpjs');
+
+
+_.each([
+	'strpos',
+	'isset',
+	'count',
+	'is_object',
+	'in_array',
+	'array_key_exists',
+	'is_array',
+	'is_numeric',
+	'strtotime',
+	'strval',
+	'empty',
+	'array'
+], function (val) {
+	templateData[val] = php[val];
+});
 
 
 var defaultsDeep = _.partialRight(_.merge, function deep(value, other) {
@@ -23,6 +37,10 @@ var defaultsDeep = _.partialRight(_.merge, function deep(value, other) {
 });
 
 
+/**
+ merges two or more objects into one
+ shallow copy for objects
+ */
 function obMerge(ob1, ob2 /*, ...*/) {
 	for (var i = 1; i < arguments.length; ++i) {
 		for (var nm in arguments[i]) {
@@ -1758,7 +1776,7 @@ jSmart.prototype.getTemplate = function (name) {
 
 		} else {
 
-			buffer = 'No template for ' +  name;
+			buffer = 'No template for ' + name;
 
 		}
 
@@ -1772,12 +1790,12 @@ jSmart.prototype.getTemplate = function (name) {
 
 };
 
-jSmart.prototype.templateNotFound = function(filename) {
+jSmart.prototype.templateNotFound = function (filename) {
 	throw new Error('No template for ' + filename);
 };
 
 
-jSmart.prototype.getTemplatePipe = function(buffer) {
+jSmart.prototype.getTemplatePipe = function (buffer) {
 	return buffer.toString();
 };
 
