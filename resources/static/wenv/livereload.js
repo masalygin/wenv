@@ -1,5 +1,5 @@
 (function() {
-	var socket = io.connect(document.location.hostname + ':80');
+	var socket = io.connect(document.location.hostname + ':3001');
 	var counter = 0;
 	var root = 'images/';
 

@@ -6,7 +6,7 @@ module.exports = function(app) {
 	var server = http.Server(app);
 	io = io(server);
 
-	io.listen(80);
+	io.listen(3001);
 
 	app.io = io;
 
