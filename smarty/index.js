@@ -1798,8 +1798,8 @@ jSmart.prototype.debugging = false;
 jSmart.prototype.PHPJS = function (fnm, modifier) {
 	if (eval('typeof ' + fnm) == 'function') {
 		return (typeof window == 'object') ? window : global;
-	} else if (typeof(PHP_JS) == 'function') {
-		return new PHP_JS();
+	} else if (typeof php[fnm] == 'function') {
+		return php;
 	}
 	throw new Error("Modifier '" + modifier + "' uses JavaScript port of PHP function '" + fnm + "'. You can find one at http://phpjs.org");
 }
