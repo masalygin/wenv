@@ -13,55 +13,6 @@ var templateData = require('./data');
 var php = require('phpjs');
 
 
-_.each([
-
-	'strpos',
-	'isset',
-	'count',
-	'is_object',
-	'in_array',
-	'array_key_exists',
-	'is_array',
-	'is_numeric',
-	'strtotime',
-	'strval',
-	'empty',
-	'array',
-
-	'abs',
-	'trim',
-	'round',
-	'floor',
-	'ceil',
-	'unserialize',
-	'strip_tags',
-	'stripslashes',
-	'json_encode',
-	'json_decode',
-	'htmlspecialchars',
-	'htmlspecialchars_decode',
-	'nl2br',
-	'urlencode',
-	'explode',
-	'implode',
-	'count',
-	'md5',
-	'sha1',
-	'base64_encode',
-	'sprintf'
-
-], function (val) {
-	templateData[val] = php[val];
-});
-
-
-templateData.regex_replace = function (subject, pattern, replacement) {
-	pattern = pattern.replace(/^\/|\/$/g, '');
-	var regexp = new RegExp(pattern, 'g');
-	return subject.replace(regexp, replacement);
-};
-
-
 var defaultsDeep = _.partialRight(_.merge, function deep(value, other) {
 	return _.merge(value, other, deep);
 });
@@ -2721,6 +2672,66 @@ jSmart.prototype.registerPlugin(
 			lines[i] = parts + line;
 		}
 		return lines.join('\n');
+	}
+);
+
+
+_.each([
+
+	'strpos',
+	'isset',
+	'is_object',
+	'in_array',
+	'array_key_exists',
+	'is_array',
+	'is_numeric',
+	'strtotime',
+	'strval',
+	'empty',
+	'array',
+
+	'abs',
+	'trim',
+	'round',
+	'floor',
+	'ceil',
+	'unserialize',
+	'strip_tags',
+	'stripslashes',
+	'json_encode',
+	'json_decode',
+	'htmlspecialchars',
+	'htmlspecialchars_decode',
+	'nl2br',
+	'urlencode',
+	'explode',
+	'implode',
+	'count',
+	'md5',
+	'sha1',
+	'base64_encode',
+	'sprintf'
+
+], function (val) {
+
+	jSmart.prototype.registerPlugin(
+		'modifier',
+		val,
+		function () {
+			return php[val].apply(php, arguments);
+		}
+	);
+
+});
+
+
+jSmart.prototype.registerPlugin(
+	'modifier',
+	'regex_replace',
+	function (subject, pattern, replacement) {
+		pattern = pattern.replace(/^\/|\/$/g, '');
+		var regexp = new RegExp(pattern, 'g');
+		return subject.replace(regexp, replacement);
 	}
 );
 
