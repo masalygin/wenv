@@ -2331,29 +2331,6 @@ jSmart.prototype.registerPlugin(
 	}
 );
 
-jSmart.prototype.registerPlugin(
-	'modifier',
-	'count',
-	function (v, recursive) {
-		if (v === null || typeof v === 'undefined') {
-			return 0;
-		} else if (v.constructor !== Array && v.constructor !== Object) {
-			return 1;
-		}
-
-		recursive = Boolean(recursive);
-		var k, cnt = 0;
-		for (k in v) {
-			if (v.hasOwnProperty(k)) {
-				cnt++;
-				if (recursive && v[k] && (v[k].constructor === Array || v[k].constructor === Object)) {
-					cnt += modifiers.count(v[k], true);
-				}
-			}
-		}
-		return cnt;
-	}
-);
 
 jSmart.prototype.registerPlugin(
 	'modifier',
@@ -2525,13 +2502,6 @@ jSmart.prototype.registerPlugin(
 	}
 );
 
-jSmart.prototype.registerPlugin(
-	'modifier',
-	'nl2br',
-	function (s) {
-		return s.replace(/\n/g, '<br />\n');
-	}
-);
 
 /**
  only modifiers (flags) 'i' and 'm' are supported
@@ -2696,7 +2666,6 @@ _.each([
 	'floor',
 	'ceil',
 	'unserialize',
-	'strip_tags',
 	'stripslashes',
 	'json_encode',
 	'json_decode',
@@ -2723,18 +2692,6 @@ _.each([
 	);
 
 });
-
-
-jSmart.prototype.registerPlugin(
-	'modifier',
-	'regex_replace',
-	function (subject, pattern, replacement) {
-		pattern = pattern.replace(/^\/|\/$/g, '');
-		var regexp = new RegExp(pattern, 'g');
-		return subject.replace(regexp, replacement);
-	}
-);
-
 
 String.prototype.fetch = function (data) {
 	var tpl = new jSmart(this);
