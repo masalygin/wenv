@@ -1901,22 +1901,6 @@ jSmart.prototype.registerPlugin(
 	}
 );
 
-jSmart.prototype.registerPlugin(
-	'function',
-	'call',
-	function (params, data) {
-		var fname = params.__get('name', null, 0);
-		delete params.name;
-		var assignTo = params.__get('assign', false);
-		delete params.assign;
-		var s = plugins[fname].process(params, data);
-		if (assignTo) {
-			assignVar(assignTo, s, data);
-			return '';
-		}
-		return s;
-	}
-);
 
 jSmart.prototype.registerPlugin(
 	'block',
@@ -2054,6 +2038,7 @@ jSmart.prototype.registerPlugin(
 );
 
 jSmart.prototype.print_r = function (v, indent) {
+	indent = indent || '\t';
 	if (v instanceof Object) {
 		var s = ((v instanceof Array) ? 'Array[' + v.length + ']' : 'Object') + '<br>';
 		for (var nm in v) {
@@ -2063,55 +2048,34 @@ jSmart.prototype.print_r = function (v, indent) {
 		}
 		return s;
 	}
-	return v;
+	return _.escape(v).split(/\r?\n\r?/).join('<br>');
 }
+
+jSmart.prototype.debugTemplate = fs.readFileSync(path.join(__dirname, 'debug.tpl')).toString();
 
 jSmart.prototype.registerPlugin(
 	'function',
 	'debug',
 	function (params, data) {
-		if (typeof dbgWnd != 'undefined') {
-			dbgWnd.close();
-		}
-		dbgWnd = window.open('', '', 'width=680,height=600,resizable,scrollbars=yes');
-		var sVars = '';
-		var i = 0;
-		for (var nm in data) {
-			sVars += '<tr class=' + (++i % 2 ? 'odd' : 'even') + '><td><strong>' + nm + '</strong></td><td>' + jSmart.prototype.print_r(data[nm], '') + '</td></tr>';
-		}
-		dbgWnd.document.write(" \
-               <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en'> \
-               <head> \
-		            <title>jSmart Debug Console</title> \
-                  <style type='text/css'> \
-                     table {width: 100%;} \
-                     td {vertical-align:top;width: 50%;} \
-                     .even td {background-color: #fafafa;} \
-                  </style> \
-               </head> \
-               <body> \
-                  <h1>jSmart Debug Console</h1> \
-                  <h2>assigned template variables</h2> \
-                  <table>" + sVars + "</table> \
-               </body> \
-               </html> \
-            ");
-		return '';
-	}
-);
 
-jSmart.prototype.registerPlugin(
-	'function',
-	'eval',
-	function (params, data) {
-		var tree = [];
-		parse(params.__get('var', '', 0), tree);
-		var s = process(tree, data);
-		if ('assign' in params) {
-			assignVar(params.assign, s, data);
-			return '';
-		}
-		return s;
+		var smarty = new jSmart(jSmart.prototype.debugTemplate);
+		var res = smarty.fetch({
+			data: data,
+			print_r: jSmart.prototype.print_r
+		});
+
+		res = '' +
+			'<script>\n' +
+			'	(function() {\n' +
+			'		var w = window.open(\'\', \'\', \'width=680,height=600,resizable,scrollbars=yes\');\n' +
+			'		w.document.write(\'' +
+						res +
+					'\');\n' +
+			'	})();\n' +
+			'</script>';
+
+		return res;
+
 	}
 );
 
@@ -2132,40 +2096,6 @@ jSmart.prototype.registerPlugin(
 	}
 );
 
-
-jSmart.prototype.registerPlugin(
-	'function',
-	'insert',
-	function (params, data) {
-		var fparams = {};
-		for (var nm in params) {
-			if (params.hasOwnProperty(nm) && isNaN(nm) && params[nm] && typeof params[nm] == 'string' && nm != 'name' && nm != 'assign' && nm != 'script') {
-				fparams[nm] = params[nm];
-			}
-		}
-		var prefix = 'insert_';
-		if ('script' in params) {
-			eval(jSmart.prototype.getJavascript(params.script));
-			prefix = 'smarty_insert_';
-		}
-		var func = eval(prefix + params.__get('name', null, 0));
-		var s = func(fparams, data);
-		if ('assign' in params) {
-			assignVar(params.assign, s, data);
-			return '';
-		}
-		return s;
-	}
-);
-
-jSmart.prototype.registerPlugin(
-	'function',
-	'config_load',
-	function (params, data) {
-		jSmart.prototype.configLoad(jSmart.prototype.getConfig(params.__get('file', null, 0)), params.__get('section', '', 1), data);
-		return '';
-	}
-);
 
 jSmart.prototype.registerPlugin(
 	'function',
