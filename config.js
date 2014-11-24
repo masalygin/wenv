@@ -19,6 +19,19 @@ module.exports.replace = {
 				'{tpl.body}': '{include file="global:order.tpl"}'
 			}
 		}
-	}
+	},
+
+	smarty: [
+		'if',
+		'foreach',
+		'capture',
+		'section',
+		'literal',
+		'strip',
+		'else',
+		'elseif',
+		'foreachelse',
+		'sectionelse'
+	]
 
 };

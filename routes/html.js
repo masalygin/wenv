@@ -2,10 +2,9 @@ var config = require('../config');
 var lib = require('../lib');
 var path = require('path');
 var url = require('url');
-var fs = require('fs-extra');
 var _ = require('lodash');
-var Smarty = require('../smarty');
 var chokidar = require('chokidar');
+var Collector = require('../lib/fcollector');
 
 
 function replace(text, aliases) {
@@ -36,6 +35,13 @@ function replaceByGet(text, query) {
 }
 
 
+var smartyTagsRegExp = new RegExp('(\\{\\/?(' + config.replace.smarty.join('|') + ')[^\\}]*\\})', 'g');;
+
+function removeSmartyTags(text) {
+	return text.replace(smartyTagsRegExp, '');
+}
+
+
 module.exports = function (app) {
 
 	var workDir = app.get('workDir');
@@ -57,15 +63,6 @@ module.exports = function (app) {
 		var filepath = path.join(workDir, uri.pathname);
 		var dir = path.dirname(filepath);
 
-		Smarty.prototype.templatesDir = dir;
-		Smarty.prototype.globalDir = templatesDir;
-
-		Smarty.prototype.getTemplatePipe = function(buffer, filename, resource) {
-			var text = buffer.toString();
-			text = replaceByGet(text, req.query);
-			text = replace(text);
-			return text;
-		};
 
 		if (prevDir != dir) {
 
@@ -112,28 +109,58 @@ module.exports = function (app) {
 		prevDir = dir;
 
 
-		fs.readFile(filepath, function(err, buffer) {
+		new Collector({
 
-			if (err) {
-				lib.sendError(err,  res);
-				return;
+			altPath: app.get('templatesDir'),
+
+			main: filepath,
+
+			success: function(text) {
+
+				text = removeSmartyTags(text);
+				text += '<script src="/wenv/socket.io.js"></script>' +
+						'<script src="/wenv/livereload.js"></script>';
+
+				res.send(text);
+
+			},
+
+			error: function(err) {
+
+				utils.error(uri.pathname + '\n' + err, res);
+
+			},
+
+			pipe: function(data) {
+
+				var self = this;
+				var sub = [];
+
+				data = replaceByGet(data, req.query);
+				data = replace(data);
+
+				data = data.replace(/\{include\s+file="(db|global):([^"]+)"[^\}]*\}/g, function(include, resource, filename) {
+
+					var s = {};
+					s.filepath = path.resolve(dir, filename);
+					s.include = include;
+
+					if (resource === 'global') {
+						s.altpath = path.resolve(self.altPath, filename);
+					}
+
+					sub.push(s);
+
+					return self.label + s.filepath;
+
+				});
+
+				return {
+					data: data,
+					sub: sub
+				};
+
 			}
-
-			var text = Smarty.prototype.getTemplatePipe.call(null, buffer) +
-				'{include file="global:livereload.tpl"}';
-
-
-			var tpl = new Smarty(text, {
-				smarty: {
-					'get': req.query,
-					ip: app.get('ip'),
-					port: app.get('port')
-				}
-			});
-
-			var html = tpl.fetch({});
-
-			res.send(html);
 
 		});
 
