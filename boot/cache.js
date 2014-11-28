@@ -11,4 +11,6 @@ module.exports = function(app) {
 	lib.cache.dir = cacheDir;
 	lib.cache.sass.add(staticDir);
 
+	fs.ensureDir(path.join(cacheDir, 'templates_c'));
+
 };

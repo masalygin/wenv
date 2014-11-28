@@ -5,6 +5,7 @@ var url = require('url');
 var _ = require('lodash');
 var chokidar = require('chokidar');
 var Collector = require('../lib/fcollector');
+var exec = require('child_process').exec;
 
 
 function replace(text, aliases) {
@@ -63,7 +64,6 @@ module.exports = function (app) {
 		var filepath = path.join(workDir, uri.pathname);
 		var dir = path.dirname(filepath);
 
-
 		if (prevDir != dir) {
 
 			if (watcher) {
@@ -109,59 +109,26 @@ module.exports = function (app) {
 		prevDir = dir;
 
 
-		new Collector({
+		var command = ['C:/PHP/php'];
+		command.push(app.get('smartyFile'));
+		command.push(filepath);
+		command.push(dir);
+		command.push(app.get('templatesDir'));
+		command.push(app.get('cacheDir'));
 
-			altPath: app.get('templatesDir'),
+		command = command.join(' ');
 
-			main: filepath,
+		var smarty = exec(command, function(error, stdout, stderr) {
 
-			success: function(text) {
+			stdout = removeSmartyTags(stdout);
+			stdout += '<script src="/wenv/socket.io.js"></script>' +
+					'<script src="/wenv/livereload.js"></script>';
 
-				text = removeSmartyTags(text);
-				text += '<script src="/wenv/socket.io.js"></script>' +
-						'<script src="/wenv/livereload.js"></script>';
+			res.send(stdout);
 
-				res.send(text);
-
-			},
-
-			error: function(err) {
-
-				utils.error(uri.pathname + '\n' + err, res);
-
-			},
-
-			pipe: function(data) {
-
-				var self = this;
-				var sub = [];
-
-				data = replaceByGet(data, req.query);
-				data = replace(data);
-
-				data = data.replace(/\{include\s+file="(db|global):([^"]+)"[^\}]*\}/g, function(include, resource, filename) {
-
-					var s = {};
-					s.filepath = path.resolve(dir, filename);
-					s.include = include;
-
-					if (resource === 'global') {
-						s.altpath = path.resolve(self.altPath, filename);
-					}
-
-					sub.push(s);
-
-					return self.label + s.filepath;
-
-				});
-
-				return {
-					data: data,
-					sub: sub
-				};
-
+			if (error || stderr) {
+				utils.error(uri.pathname + '\n' + error + '\n' + stderr, res);
 			}
-
 		});
 
 	});

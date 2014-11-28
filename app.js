@@ -13,7 +13,7 @@ app.set('cacheDir', path.join(__dirname, 'cache'));
 app.set('sassDir', path.join(__dirname, 'resources/sass'));
 app.set('staticDir', path.join(__dirname, 'resources/static'));
 app.set('templatesDir', path.join(__dirname, 'resources/templates'));
-
+app.set('smartyFile', path.join(__dirname, 'Smarty/index.php'));
 
 require('./boot')(app);
 require('./routes')(app);
