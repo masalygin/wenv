@@ -5,54 +5,48 @@ var path = require('path');
 var request = require('request');
 var lib = require('../lib')
 
-module.exports = function(app) {
+app.use('/', function(req, res) {
 
-	var cacheDir = app.get('cacheDir');
+	var uri = url.parse(req.originalUrl);
+	var u = url.resolve('http://dumper.demojs0.oml.ru/', uri.pathname);
+	var p = path.join(CACHE_DIR, uri.pathname);
 
-	app.use('/', function(req, res) {
+	extra.mkdirp(path.dirname(p), function(err) {
 
-		var uri = url.parse(req.originalUrl);
-		var u = url.resolve('http://dumper.demojs0.oml.ru/', uri.pathname);
-		var p = path.join(cacheDir, uri.pathname);
+		if (err) {
 
-		extra.mkdirp(path.dirname(p), function(err) {
+			lib.sendError(err, res);
+			return;
+		}
 
-			if (err) {
+		request
+			.get(u)
+			.on('error', function(err) {
 
 				lib.sendError(err, res);
-				return;
-			}
 
-			request
-				.get(u)
-				.on('error', function(err) {
+			})
+			.on('response', function(response) {
 
-					lib.sendError(err, res);
+				if (response.statusCode !== 200) {
 
-				})
-				.on('response', function(response) {
+					lib.sendError(uri.pathname + '\nNOT FOUND', res);
+					this.abort();
 
-					if (response.statusCode !== 200) {
+				} else {
 
-						lib.sendError(uri.pathname + '\nNOT FOUND', res);
-						this.abort();
+					var writeStream = fs.createWriteStream(p);
 
-					} else {
+					writeStream.on('finish', function() {
+						res.sendfile(p);
+					});
 
-						var writeStream = fs.createWriteStream(p);
+					this.pipe(writeStream);
 
-						writeStream.on('finish', function() {
-							res.sendfile(p);
-						});
+				}
 
-						this.pipe(writeStream);
-
-					}
-
-				});
-
-		});
+			});
 
 	});
 
-};
+});

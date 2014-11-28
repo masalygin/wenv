@@ -2,23 +2,22 @@ var express = require('express');
 var http = require('http');
 var ip = require('ip');
 var path = require('path');
-var app = express();
+
+global.app = express();
+
+global.WORK_DIR =  path.resolve(__dirname, '../www');
+global.CACHE_DIR = path.join(__dirname, 'cache');
+global.SASS_DIR = path.join(__dirname, 'resources/sass');
+global.STATIC_DIR = path.join(__dirname, 'resources/static');
+global.TEMPLATES_DIR = path.join(__dirname, 'resources/templates');
+global.SMARTY_COMMAND = path.join(__dirname, 'Smarty/index.php');
+global.PORT = process.env.PORT || 3000;
+global.IP = ip.address();
+
+require('./boot');
+require('./routes');
 
 
-app.set('port', process.env.PORT || 3000);
-app.set('ip', ip.address());
-
-app.set('workDir', path.resolve(__dirname, '../www'));
-app.set('cacheDir', path.join(__dirname, 'cache'));
-app.set('sassDir', path.join(__dirname, 'resources/sass'));
-app.set('staticDir', path.join(__dirname, 'resources/static'));
-app.set('templatesDir', path.join(__dirname, 'resources/templates'));
-app.set('smartyFile', path.join(__dirname, 'Smarty/index.php'));
-
-require('./boot')(app);
-require('./routes')(app);
-
-
-http.createServer(app).listen(app.get('port'), app.get('ip'), function() {
-	console.log('Express server listening on http://' + app.get('ip') + ':' + app.get('port'));
+http.createServer(app).listen(PORT, IP, function() {
+	console.log('Express server listening on http://' + IP + ':' + PORT);
 });

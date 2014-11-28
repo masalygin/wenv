@@ -4,7 +4,6 @@ var path = require('path');
 var url = require('url');
 var _ = require('lodash');
 var chokidar = require('chokidar');
-var Collector = require('../lib/fcollector');
 var exec = require('child_process').exec;
 
 
@@ -43,94 +42,86 @@ function removeSmartyTags(text) {
 }
 
 
-module.exports = function (app) {
+var prevDir = null;
+var watcher = null;
 
-	var workDir = app.get('workDir');
-	var cacheDir = app.get('cacheDir');
-	var templatesDir = app.get('templatesDir');
-	var prevDir = null;
-	var watcher = null;
+var reload = _.debounce(function(type) {
 
-	var reload = _.debounce(function(type) {
+	app.io.emit('reload', type);
 
-		app.io.emit('reload', type);
-
-	}, 500);
+}, 500);
 
 
-	app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
+app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
-		var uri = url.parse(req.originalUrl);
-		var filepath = path.join(workDir, uri.pathname);
-		var dir = path.dirname(filepath);
+	var uri = url.parse(req.originalUrl);
+	var filepath = path.join(WORK_DIR, uri.pathname);
+	var dir = path.dirname(filepath);
 
-		if (prevDir != dir) {
+	if (prevDir != dir) {
 
-			if (watcher) {
-				watcher.close();
-			}
+		if (watcher) {
+			watcher.close();
+		}
 
-			lib.cache.sass.add(dir);
+		lib.cache.sass.add(dir);
 
-			watcher = chokidar.watch(dir, {
-				ignored: /[\/\\]\./,
-				ignorePermissionErrors: true,
-				persistent: true
-			});
+		watcher = chokidar.watch(dir, {
+			ignored: /[\/\\]\./,
+			ignorePermissionErrors: true,
+			persistent: true
+		});
 
-			watcher.on('all', function(event, filepath) {
+		watcher.on('all', function(event, filepath) {
 
-				if (event == 'add' || event == 'change' || event == 'unlink') {
+			if (event == 'add' || event == 'change' || event == 'unlink') {
 
 
-					if (/\.scss$/.test(filepath)) {
+				if (/\.scss$/.test(filepath)) {
 
-						if (event == 'unlink') {
-							lib.cache.sass.remove(filepath);
-						} else {
-							lib.cache.sass.add(filepath);
-						}
-
-						reload(filepath);
-
+					if (event == 'unlink') {
+						lib.cache.sass.remove(filepath);
 					} else {
-
-						reload();
-
+						lib.cache.sass.add(filepath);
 					}
 
+					reload(filepath);
+
+				} else {
+
+					reload();
 
 				}
 
-			});
 
-		}
-
-		prevDir = dir;
-
-
-		var command = ['C:/PHP/php'];
-		command.push(app.get('smartyFile'));
-		command.push(filepath);
-		command.push(dir);
-		command.push(app.get('templatesDir'));
-		command.push(app.get('cacheDir'));
-
-		command = command.join(' ');
-
-		var smarty = exec(command, function(error, stdout, stderr) {
-
-			stdout = removeSmartyTags(stdout);
-			stdout += '<script src="/wenv/socket.io.js"></script>' +
-					'<script src="/wenv/livereload.js"></script>';
-
-			res.send(stdout);
-
-			if (error || stderr) {
-				utils.error(uri.pathname + '\n' + error + '\n' + stderr, res);
 			}
+
 		});
 
+	}
+
+	prevDir = dir;
+
+
+	var command = ['C:/PHP/php'];
+	command.push(SMARTY_COMMAND);
+	command.push(filepath);
+	command.push(dir);
+	command.push(TEMPLATES_DIR);
+	command.push(CACHE_DIR);
+
+	command = command.join(' ');
+
+	var smarty = exec(command, function(error, stdout, stderr) {
+
+		stdout = removeSmartyTags(stdout);
+		stdout += '<script src="/wenv/socket.io.js"></script><script src="/wenv/livereload.js"></script>';
+
+		res.send(stdout);
+
+		if (error || stderr) {
+			lib.sendError(uri.pathname + '\n' + error + '\n' + stderr, res);
+		}
 	});
 
-};
+});

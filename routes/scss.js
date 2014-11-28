@@ -3,34 +3,26 @@ var path = require('path');
 var url = require('url');
 var lib = require('../lib');
 
-module.exports = function (app) {
+app.get(/^(.+\.scss\.css)(\?.*)?$/, function (req, res) {
 
-	var workDir = app.get('workDir');
-	var cacheDir = app.get('cacheDir');
-	var sassDir = app.get('sassDir');
+	var uri = url.parse(req.originalUrl);
+	var cssFile = path.join(CACHE_DIR, 'site/images', uri.pathname.split('/images/')[1]);
+	var scssFile = cssFile.replace(/\.scss\.css$/, '.scss');
 
-	app.get(/^(.+\.scss\.css)(\?.*)?$/, function (req, res) {
-
-		var uri = url.parse(req.originalUrl);
-		var cssFile = path.join(cacheDir, 'site/images', uri.pathname.split('/images/')[1]);
-		var scssFile = cssFile.replace(/\.scss\.css$/, '.scss');
-
-		sass.renderFile({
-			file: scssFile,
-			outFile: cssFile,
-			includePaths: [
-				path.join(cacheDir, 'site/images'),
-				path.join(cacheDir, 'g'),
-				sassDir
-			],
-			success: function () {
-				res.sendfile(cssFile);
-			},
-			error: function(err) {
-				lib.sendError(scssFile + '\n' + err, res);
-			}
-		});
-
+	sass.renderFile({
+		file: scssFile,
+		outFile: cssFile,
+		includePaths: [
+			path.join(CACHE_DIR, 'site/images'),
+			path.join(CACHE_DIR, 'g'),
+			SASS_DIR
+		],
+		success: function () {
+			res.sendfile(cssFile);
+		},
+		error: function(err) {
+			lib.sendError(scssFile + '\n' + err, res);
+		}
 	});
 
-};
+});

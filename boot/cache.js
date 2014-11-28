@@ -2,15 +2,8 @@ var fs = require('fs-extra');
 var lib = require('../lib');
 var path = require('path');
 
-module.exports = function(app) {
+fs.removeSync(CACHE_DIR);
+lib.cache.dir = CACHE_DIR;
+lib.cache.sass.add(STATIC_DIR);
 
-	var cacheDir = app.get('cacheDir');
-	var staticDir = app.get('staticDir');
-
-	fs.removeSync(cacheDir);
-	lib.cache.dir = cacheDir;
-	lib.cache.sass.add(staticDir);
-
-	fs.ensureDir(path.join(cacheDir, 'templates_c'));
-
-};
+fs.ensureDir(path.join(CACHE_DIR, 'templates_c'));
