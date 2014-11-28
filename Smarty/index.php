@@ -70,6 +70,7 @@
 	$smarty->register_resource('db', array('db_template', 'db_timestamp', 'db_secure', 'db_trusted'));
 	$smarty->register_resource('global', array('global_template', 'global_timestamp', 'global_secure', 'global_trusted'));
 
+	$smarty->assign('common_js', require(__DIR__.'/data/common_js.php'));
 	$smarty->assign('menu', require(__DIR__.'/data/menu.php'));
 
 	$smarty->display($file);
