@@ -1,46 +1,9 @@
-var config = require('../config');
 var lib = require('../lib');
 var path = require('path');
 var url = require('url');
 var _ = require('lodash');
 var chokidar = require('chokidar');
 var exec = require('child_process').exec;
-
-
-function replace(text, aliases) {
-
-	aliases = aliases || config.replace['*'];
-
-	_.each(aliases, function(val, key) {
-		text = text.replace(new RegExp(lib.regexpEscape(key), 'g'), val);
-	});
-
-	return text;
-}
-
-
-function replaceByGet(text, query) {
-
-	var GET = config.replace['get'];
-
-	_.each(query, function(val, key) {
-		if (GET[key]) {
-			if (GET[key][val]) {
-				text = replace(text, GET[key][val]);
-			}
-		}
-	});
-
-	return text;
-}
-
-
-var smartyTagsRegExp = new RegExp('(\\{\\/?(' + config.replace.smarty.join('|') + ')[^\\}]*\\})', 'g');;
-
-function removeSmartyTags(text) {
-	return text.replace(smartyTagsRegExp, '');
-}
-
 
 var prevDir = null;
 var watcher = null;
@@ -57,6 +20,7 @@ app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 	var uri = url.parse(req.originalUrl);
 	var filepath = path.join(WORK_DIR, uri.pathname);
 	var dir = path.dirname(filepath);
+	var filename = path.basename(filepath);
 
 	if (prevDir != dir) {
 
@@ -105,7 +69,7 @@ app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 	var command = ['C:/PHP/php'];
 	command.push(SMARTY_COMMAND);
-	command.push(filepath);
+	command.push(filename);
 	command.push(dir);
 	command.push(TEMPLATES_DIR);
 	command.push(CACHE_DIR);

@@ -66,14 +66,25 @@
 
 	function global_trusted($tpl_name, &$smarty) {}
 
+	// function preprocess($tpl_source, &$smarty) {
+	// 	$replace = require(__DIR__.'/replace.php');
+		
+	// 	if ($_GET[])
+
+	// 	// preg_replace($tpl_source)
+
+	// 	return $tpl_source;
+	// }
+
 
 	$smarty->register_resource('db', array('db_template', 'db_timestamp', 'db_secure', 'db_trusted'));
 	$smarty->register_resource('global', array('global_template', 'global_timestamp', 'global_secure', 'global_trusted'));
+	// $smarty->register_prefilter('preprocess');
 
 	$smarty->assign('common_js', require(__DIR__.'/data/common_js.php'));
 	$smarty->assign('menu', require(__DIR__.'/data/menu.php'));
 
-	$smarty->display($file);
+	$smarty->display('db:' . $file);
 
 	//C:/PHP/php w:\wenv\Smarty\index.php w:\www\tmp\index.tpl w:\www\tmp w:\wenv\resources\templates w:\wenv\cache
 ?>
