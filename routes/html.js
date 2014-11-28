@@ -109,19 +109,21 @@ app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 	command.push(dir);
 	command.push(TEMPLATES_DIR);
 	command.push(CACHE_DIR);
-
 	command = command.join(' ');
 
-	var smarty = exec(command, function(error, stdout, stderr) {
-
-		stdout = removeSmartyTags(stdout);
-		stdout += '<script src="/wenv/socket.io.js"></script><script src="/wenv/livereload.js"></script>';
-
-		res.send(stdout);
+	exec(command, function(error, stdout, stderr) {
 
 		if (error || stderr) {
+
 			lib.sendError(uri.pathname + '\n' + error + '\n' + stderr, res);
+
+		} else {
+
+			stdout += '<script src="/wenv/socket.io.js"></script><script src="/wenv/livereload.js"></script>';
+			res.send(stdout);
+
 		}
 	});
+
 
 });
