@@ -1,7 +1,10 @@
+var fs = require('fs');
+var path = require('path');
+
 module.exports.replace = {
 
 	'*': {
-
+		'{$common_js}': fs.readFileSync(path.join(__dirname, 'resources/templates/common_js.tpl'))
 	},
 
 	'get': {
