@@ -7,6 +7,9 @@
 	$smarty = new Smarty();
 	$smarty->options = json_decode(urldecode($argv[1]), true);
 
+	$smarty->security_settings["MODIFIER_FUNCS"] = array("abs","base_phones","trim","round","floor","ceil","unserialize","strip_tags", "stripslashes", "json_encode","json_decode","htmlspecialchars","htmlspecialchars_decode","nl2br","regex_replace","urlencode","explode","implode","count","md5","sha1","base64_encode","spellcount","sprintf");
+	$smarty->security_settings["IF_FUNCS"] = array("strpos","preg_match","isset","count","true","false","is_object","in_array","array_key_exists", "is_array", "is_numeric", "strtotime", "strval", "empty", "array");
+
 	$_GET = $smarty->options['_GET'];
 	$_POST = $smarty->options['_POST'];
 	$_COOKIE = $smarty->options['_COOKIE'];
