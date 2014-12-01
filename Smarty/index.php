@@ -63,20 +63,32 @@
 
 	function global_trusted($tpl_name, &$smarty) {}
 
-	// function preprocess($tpl_source, &$smarty) {
-	// 	$replace = require(__DIR__.'/replace.php');
-		
-	// 	if ($_GET[])
+	function prefilter($tpl_source, &$smarty) {
 
-	// 	// preg_replace($tpl_source)
+		switch ($_GET['mode']) {
+			case 'cart':
+				$tpl_source = str_replace('{tpl.body}', '{include file="global:cart.tpl"}', $tpl_source);
+				break;
+			case 'folder':
+				$tpl_source = str_replace('{tpl.body}', '{include file="global:folder.tpl"}', $tpl_source);
+				break;
+			case 'product':
+				$tpl_source = str_replace('{tpl.body}', '{include file="global:product.tpl"}', $tpl_source);
+				break;
+			case 'order':
+				$tpl_source = str_replace('{tpl.body}', '{include file="global:order.tpl"}', $tpl_source);
+				break;
+		}
 
-	// 	return $tpl_source;
-	// }
+		$tpl_source = str_replace('{tpl.body}', '{ldelim}tpl.body{rdelim}', $tpl_source);
+
+		return $tpl_source;
+	}
 
 
 	$smarty->register_resource('db', array('db_template', 'db_timestamp', 'db_secure', 'db_trusted'));
 	$smarty->register_resource('global', array('global_template', 'global_timestamp', 'global_secure', 'global_trusted'));
-	// $smarty->register_prefilter('preprocess');
+	$smarty->register_prefilter('prefilter');
 
 	$smarty->assign('common_js', require(__DIR__.'/data/common_js.php'));
 	$smarty->assign('menu', require(__DIR__.'/data/menu.php'));
