@@ -69,6 +69,7 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 	var options = {
 		_GET: req.query,
 		_POST: req.body,
+		_COOKIE: req.cookies,
 		FILENAME: filename,
 		WORK_DIR: dir + '/',
 		TEMPLATES_DIR: TEMPLATES_DIR + '/',

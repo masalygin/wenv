@@ -9,6 +9,7 @@
 
 	$_GET = $smarty->options['_GET'];
 	$_POST = $smarty->options['_POST'];
+	$_COOKIE = $smarty->options['_COOKIE'];
 
 	$smarty->template_dir = $smarty->options['WORK_DIR'];
 	$smarty->compile_dir = $smarty->options['CACHE_DIR'] .'templates_c/';
