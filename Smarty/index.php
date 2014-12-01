@@ -5,21 +5,17 @@
 	error_reporting(E_ERROR | E_PARSE);
 
 	$smarty = new Smarty();
+	$smarty->options = json_decode(urldecode($argv[1]), true);
 
-	$file = $argv[1];
+	$_GET = $smarty->options['_GET'];
+	$_POST = $smarty->options['_POST'];
 
-	$smarty->folders = array(
-		'work' => $argv[2] . '/',
-		'global' => $argv[3] . '/',
-		'cache' => $argv[4] . '/',
-	);
-
-	$smarty->template_dir = $smarty->folders['work'] . '/';
-	$smarty->compile_dir = $smarty->folders['cache'] .'/templates_c/';
+	$smarty->template_dir = $smarty->options['WORK_DIR'];
+	$smarty->compile_dir = $smarty->options['CACHE_DIR'] .'templates_c/';
 
 	function db_template($tpl_name, &$tpl_source, &$smarty) {
 		
-		$tpl_source = file_get_contents($smarty->folders['work'] . $tpl_name);
+		$tpl_source = file_get_contents($smarty->options['WORK_DIR'] . $tpl_name);
 		
 		if ($tpl_source === false) {
 			$tpl_source = "Шаблон $tpl_name не найден";
@@ -42,10 +38,10 @@
 
 	function global_template($tpl_name, &$tpl_source, &$smarty) {
 
-		$tpl_source = file_get_contents($smarty->folders['work'] . $tpl_name);
+		$tpl_source = file_get_contents($smarty->options['WORK_DIR'] . $tpl_name);
 		
 		if ($tpl_source === false) {
-			$tpl_source = file_get_contents($smarty->folders['global'] . $tpl_name);
+			$tpl_source = file_get_contents($smarty->options['TEMPLATES_DIR'] . $tpl_name);
 		}
 
 		if ($tpl_source === false) {
@@ -84,7 +80,6 @@
 	$smarty->assign('common_js', require(__DIR__.'/data/common_js.php'));
 	$smarty->assign('menu', require(__DIR__.'/data/menu.php'));
 
-	$smarty->display('db:' . $file);
+	$smarty->display('db:' . $smarty->options['FILENAME']);
 
-	//C:/PHP/php w:\wenv\Smarty\index.php w:\www\tmp\index.tpl w:\www\tmp w:\wenv\resources\templates w:\wenv\cache
 ?>

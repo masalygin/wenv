@@ -15,7 +15,7 @@ var reload = _.debounce(function(type) {
 }, 500);
 
 
-app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
+app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 	var uri = url.parse(req.originalUrl);
 	var filepath = path.join(WORK_DIR, uri.pathname);
@@ -66,13 +66,20 @@ app.get(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 	prevDir = dir;
 
+	var options = {
+		_GET: req.query,
+		_POST: req.body,
+		FILENAME: filename,
+		WORK_DIR: dir + '/',
+		TEMPLATES_DIR: TEMPLATES_DIR + '/',
+		CACHE_DIR: CACHE_DIR + '/'
+	};
+
+	options = encodeURIComponent(JSON.stringify(options));
 
 	var command = ['C:/PHP/php'];
 	command.push(SMARTY_COMMAND);
-	command.push(filename);
-	command.push(dir);
-	command.push(TEMPLATES_DIR);
-	command.push(CACHE_DIR);
+	command.push(options);
 	command = command.join(' ');
 
 	exec(command, function(error, stdout, stderr) {
