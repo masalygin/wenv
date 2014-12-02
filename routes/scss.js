@@ -11,7 +11,6 @@ app.get(/^(.+\.scss\.css)(\?.*)?$/, function (req, res) {
 
 	sass.render({
 		file: scssFile,
-		outFile: cssFile,
 		includePaths: [
 			path.join(CACHE_DIR, 'site/images'),
 			path.join(CACHE_DIR, 'g'),
