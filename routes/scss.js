@@ -9,7 +9,7 @@ app.get(/^(.+\.scss\.css)(\?.*)?$/, function (req, res) {
 	var cssFile = path.join(CACHE_DIR, 'site/images', uri.pathname.split('/images/')[1]);
 	var scssFile = cssFile.replace(/\.scss\.css$/, '.scss');
 
-	sass.renderFile({
+	sass.render({
 		file: scssFile,
 		outFile: cssFile,
 		includePaths: [
@@ -17,8 +17,9 @@ app.get(/^(.+\.scss\.css)(\?.*)?$/, function (req, res) {
 			path.join(CACHE_DIR, 'g'),
 			SASS_DIR
 		],
-		success: function () {
-			res.sendfile(cssFile);
+		success: function (data) {
+			res.header('Content-type', 'text/css');
+			res.send(data);
 		},
 		error: function(err) {
 			lib.sendError(scssFile + '\n' + err, res);

@@ -91,7 +91,7 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 		} else {
 
-			stdout += '<script src="/wenv/socket.io.js"></script><script src="/wenv/livereload.js"></script>';
+			stdout += '<script src="/wenv/livereload.min.js"></script>';
 			res.send(stdout);
 
 		}
