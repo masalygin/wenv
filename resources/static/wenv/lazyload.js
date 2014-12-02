@@ -227,6 +227,7 @@ module.exports = (function (doc) {
 
       node.className = 'lazyload';
       node.setAttribute('charset', 'utf-8');
+      node.setAttribute('href', url);
 
       if (env.ie && !isCSS && 'onreadystatechange' in node && !('draggable' in node)) {
         node.onreadystatechange = function () {
@@ -259,6 +260,8 @@ module.exports = (function (doc) {
     for (i = 0, len = nodes.length; i < len; ++i) {
       head.appendChild(nodes[i]);
     }
+
+    return nodes;
   }
 
   /**
@@ -359,7 +362,7 @@ module.exports = (function (doc) {
     @static
     */
     css: function (urls, callback, obj, context) {
-      load('css', urls, callback, obj, context);
+      return load('css', urls, callback, obj, context);
     },
 
     /**
@@ -383,7 +386,7 @@ module.exports = (function (doc) {
     @static
     */
     js: function (urls, callback, obj, context) {
-      load('js', urls, callback, obj, context);
+      return load('js', urls, callback, obj, context);
     }
 
   };

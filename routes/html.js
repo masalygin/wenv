@@ -8,7 +8,7 @@ var exec = require('child_process').exec;
 var prevDir = null;
 var watcher = null;
 
-var reload = _.debounce(function(type) {
+var reload = _.throttle(function(type) {
 
 	app.io.emit('reload', type);
 
@@ -36,10 +36,15 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 			persistent: true
 		});
 
+		watcher.isReady = false;
+
+		watcher.on('ready', function() {
+			watcher.isReady = true;
+		});
+
 		watcher.on('all', function(event, filepath) {
 
-			if (event == 'add' || event == 'change' || event == 'unlink') {
-
+			if (watcher.isReady && event == 'add' || event == 'change' || event == 'unlink') {
 
 				if (/\.scss$/.test(filepath)) {
 
@@ -49,7 +54,7 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 						lib.cache.sass.add(filepath);
 					}
 
-					reload(filepath);
+					reload('css');
 
 				} else {
 

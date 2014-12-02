@@ -1,37 +1,58 @@
 var io = require('./socket.io');
 var LazyLoad = require('./lazyload');
-var socket = io.connect(document.location.hostname + ':3001');
-var counter = 0;
 
-function escape(path) {
-	return path.replace(/([\.\/])/g, '\\$1');
-}
 
-function relative(path) {
-	var root = 'images/';
-	return root + path.replace(/\\/g, '/').split(root)[1];
-}
+function LiveReload(socket) {
 
-function reloadCSS(path) {
+	var self = this;
+	this.socket = socket;
 
-	path = relative(path);
-	var link = document.querySelector('link[href^=' + escape(path) + ']');
-	path = path + '.css?_=' + counter;
 
-	LazyLoad.css(path, function() {
-		link && link.parentNode.removeChild(link);
+	this.socket.on('reload', function (type) {
+		switch (type) {
+			case 'css':
+				self.reloadCSS();
+				break;
+			default:
+				self.reloadPage();
+				break;
+		}
 	});
 
 }
 
+LiveReload.prototype.reloadCSS = function() {
 
-socket.on('reload', function (path) {
-	counter++;
+	LiveReload.each(document.querySelectorAll('link, style.lazyload'), function() {
 
-	if (/\.scss/.test(path)) {
-		reloadCSS(path);
-	} else {
-		document.location.reload();
+		var url = LiveReload.parseURL(this.getAttribute('href'));
+
+		LazyLoad.css(url.pathname + '?_=' + Date.now(), function(link) {
+			link.parentNode.removeChild(link);
+		}, this);
+
+	});
+
+};
+
+LiveReload.prototype.reloadPage = function() {
+	document.location.reload();
+};
+
+LiveReload.each = function(arr, callback) {
+	if (!arr) {
+		return;
 	}
+	for (var i = 0, len = arr.length; i < len; i++) {
+		callback.call(arr[i], i, arr[i], arr);
+	}
+};
 
-});
+LiveReload.parseURL = function(url) {
+	var a = document.createElement('a');
+	a.href = url;
+	return a;
+};
+
+
+new LiveReload(io.connect(document.location.hostname + ':3001'));
