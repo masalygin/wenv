@@ -27,9 +27,11 @@ LiveReload.prototype.reloadCSS = function() {
 
 		var url = LiveReload.parseURL(this.getAttribute('href'));
 
-		LazyLoad.css(url.pathname + '?_=' + Date.now(), function(link) {
-			link.parentNode.removeChild(link);
-		}, this);
+		if (/\.scss\.css$/.test(url.pathname)) {
+			LazyLoad.css(url.pathname + '?_=' + Date.now(), function(link) {
+				link.parentNode.removeChild(link);
+			}, this);
+		}
 
 	});
 
