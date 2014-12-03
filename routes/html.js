@@ -30,11 +30,11 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 	command.push(options);
 	command = command.join(' ');
 
-	exec(command, function(error, stdout, stderr) {
+	exec(command, function(err, stdout) {
 
-		if (error || stderr) {
+		if (err) {
 
-			res.sendError(uri.pathname + '\n' + error + '\n' + stderr);
+			res.sendError('Ошибка Smarty: ' + stdout, '<script src="/wenv/livereload.min.js"></script>');
 
 		} else {
 

@@ -1,3 +1,3 @@
 app.use(function (req, res) {
-	res.sendError(req.originalUrl + '\nNOT FOUND');
+	res.sendError('Not found:\n' + req.originalUrl);
 });

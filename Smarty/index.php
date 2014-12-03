@@ -2,9 +2,10 @@
 
 	require_once('Smarty.class.php');
 
-	error_reporting(E_ERROR | E_PARSE);
+	// error_reporting(E_ERROR | E_PARSE);
 
 	$smarty = new Smarty();
+	$smarty->error_reporting = E_ALL & ~E_NOTICE &~E_WARNING;
 	$smarty->options = json_decode(urldecode($argv[1]), true);
 
 	$smarty->security_settings["MODIFIER_FUNCS"] = array("abs","base_phones","trim","round","floor","ceil","unserialize","strip_tags", "stripslashes", "json_encode","json_decode","htmlspecialchars","htmlspecialchars_decode","nl2br","regex_replace","urlencode","explode","implode","count","md5","sha1","base64_encode","spellcount","sprintf");

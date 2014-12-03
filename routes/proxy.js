@@ -17,7 +17,7 @@ app.use('/', function(req, res) {
 
 	stream.on('response', function(response) {
 		if (response.statusCode !== 200) {
-			res.sendError(uri.pathname + '\nNOT FOUND');
+			res.sendError('Not found:\n' + req.originalUrl);
 			this.abort();
 		} else {
 			fs.ensureDirSync(path.dirname(filepath));
