@@ -3,6 +3,8 @@ var http = require('http');
 var ip = require('ip');
 var path = require('path');
 
+require('./lib/server-response');
+
 global.app = express();
 
 global.WORK_DIR =  path.resolve(__dirname, '../www');

@@ -1,6 +1,6 @@
 var bodyParser = require('body-parser');
 var fs = require('fs-extra');
-var Sass = require('../lib').Sass;
+var Sass = require('../lib/sass');
 var path = require('path');
 
 

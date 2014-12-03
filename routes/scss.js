@@ -1,7 +1,6 @@
 var sass = require('node-sass');
 var path = require('path');
 var url = require('url');
-var lib = require('../lib');
 
 app.get(/^(.+\.scss\.css)(\?.*)?$/, function (req, res) {
 
@@ -21,7 +20,7 @@ app.get(/^(.+\.scss\.css)(\?.*)?$/, function (req, res) {
 			res.send(data);
 		},
 		error: function(err) {
-			lib.sendError(scssFile + '\n' + err, res);
+			res.sendError(scssFile + '\n' + err);
 		}
 	});
 

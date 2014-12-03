@@ -3,7 +3,6 @@ var fs = require('fs');
 var extra = require('fs-extra');
 var path = require('path');
 var request = require('request');
-var lib = require('../lib')
 
 app.use('/', function(req, res) {
 
@@ -15,7 +14,7 @@ app.use('/', function(req, res) {
 
 		if (err) {
 
-			lib.sendError(err, res);
+			res.sendError(err);
 			return;
 		}
 
@@ -23,14 +22,14 @@ app.use('/', function(req, res) {
 			.get(u)
 			.on('error', function(err) {
 
-				lib.sendError(err, res);
+				res.sendError(err);
 
 			})
 			.on('response', function(response) {
 
 				if (response.statusCode !== 200) {
 
-					lib.sendError(uri.pathname + '\nNOT FOUND', res);
+					res.sendError(uri.pathname + '\nNOT FOUND');
 					this.abort();
 
 				} else {

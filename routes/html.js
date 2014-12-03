@@ -1,5 +1,4 @@
-var lib = require('../lib');
-var Sass = require('../lib').Sass;
+var Sass = require('../lib/sass');
 var path = require('path');
 var url = require('url');
 var _ = require('lodash');
@@ -94,7 +93,7 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 		if (error || stderr) {
 
-			lib.sendError(uri.pathname + '\n' + error + '\n' + stderr, res);
+			res.sendError(uri.pathname + '\n' + error + '\n' + stderr);
 
 		} else {
 
