@@ -1,18 +1,7 @@
-var Sass = require('../lib/sass');
 var path = require('path');
 var url = require('url');
-var _ = require('lodash');
-var chokidar = require('chokidar');
 var exec = require('child_process').exec;
-
-var prevDir = null;
-var watcher = null;
-
-var reload = _.throttle(function(type) {
-
-	app.io.emit('reload', type);
-
-}, 500);
+var Watcher = require('../lib/watcher');
 
 
 app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
@@ -22,55 +11,7 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 	var dir = path.dirname(filepath);
 	var filename = path.basename(filepath);
 
-	if (prevDir != dir) {
-
-		if (watcher) {
-			watcher.close();
-		}
-
-		Sass.clearCacheSite();
-		Sass.addToCache(dir);
-
-		watcher = chokidar.watch(dir, {
-			ignored: /[\/\\]\./,
-			ignorePermissionErrors: true,
-			persistent: true
-		});
-
-		watcher.isReady = false;
-
-		watcher.on('ready', function() {
-			watcher.isReady = true;
-		});
-
-		watcher.on('all', function(event, filepath) {
-
-			if (watcher.isReady && event == 'add' || event == 'change' || event == 'unlink') {
-
-				if (/\.scss$/.test(filepath)) {
-
-					if (event == 'unlink') {
-						Sass.removeFromCache(filepath);
-					} else {
-						Sass.addToCache(filepath);
-					}
-
-					reload('css');
-
-				} else {
-
-					reload();
-
-				}
-
-
-			}
-
-		});
-
-	}
-
-	prevDir = dir;
+	Watcher.setDir(dir);
 
 	var options = {
 		_GET: req.query,

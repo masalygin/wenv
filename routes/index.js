@@ -1,4 +1,4 @@
-require('./scss');
+require('./sass');
 require('./html');
 require('./static');
 require('./proxy');
