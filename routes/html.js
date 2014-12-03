@@ -1,8 +1,7 @@
 var path = require('path');
 var url = require('url');
-var exec = require('child_process').exec;
 var Watcher = require('../lib/watcher');
-
+var Smarty = require('../lib/smarty');
 
 app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
@@ -13,7 +12,7 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 
 	Watcher.setDir(dir);
 
-	var options = {
+	new Smarty(res, {
 		_GET: req.query,
 		_POST: req.body,
 		_COOKIE: req.cookies,
@@ -21,28 +20,6 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 		WORK_DIR: dir + '/',
 		TEMPLATES_DIR: TEMPLATES_DIR + '/',
 		CACHE_DIR: CACHE_DIR + '/'
-	};
-
-	options = encodeURIComponent(JSON.stringify(options));
-
-	var command = ['C:/PHP/php'];
-	command.push(SMARTY_COMMAND);
-	command.push(options);
-	command = command.join(' ');
-
-	exec(command, function(err, stdout) {
-
-		if (err) {
-
-			res.sendError('Ошибка Smarty: ' + stdout, '<script src="/wenv/livereload.min.js"></script>');
-
-		} else {
-
-			stdout += '\n\n\n\n<script src="/wenv/livereload.min.js"></script>';
-			res.send(stdout);
-
-		}
 	});
-
 
 });

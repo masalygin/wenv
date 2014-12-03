@@ -94,18 +94,25 @@
 	$smarty->register_resource('global', array('global_template', 'global_timestamp', 'global_secure', 'global_trusted'));
 	$smarty->register_prefilter('prefilter');
 
-	$smarty->assign('common_js', require(__DIR__.'/data/common_js.php'));
-	$smarty->assign('menu', require(__DIR__.'/data/menu.php'));
-	$smarty->assign('menu2', require(__DIR__.'/data/menu2.php'));
-	$smarty->assign('copyright', require(__DIR__.'/data/copyright.php'));
-	$smarty->assign('shop2_cart', require(__DIR__.'/data/shop2_cart.php'));
-	$smarty->assign('folders_shared', require(__DIR__.'/data/folders_shared.php'));
-	$smarty->assign('text', require(__DIR__.'/data/text.php'));
-	$smarty->assign('page', require(__DIR__.'/data/page.php'));
-	$smarty->assign('site', require(__DIR__.'/data/site.php'));
-	$smarty->assign('block1', require(__DIR__.'/data/block1.php'));
-	$smarty->assign('lastnews', require(__DIR__.'/data/lastnews.php'));
-	$smarty->assign('sidevote', require(__DIR__.'/data/sidevote.php'));
+	if ($smarty->options['SMARTY_DATA_FILE']) {
+
+		$data = require($smarty->options['SMARTY_DATA_FILE']);
+		$smarty->assign($data);
+
+	} else {
+		$smarty->assign('common_js', require(__DIR__.'/data/common_js.php'));
+		$smarty->assign('menu', require(__DIR__.'/data/menu.php'));
+		$smarty->assign('menu2', require(__DIR__.'/data/menu2.php'));
+		$smarty->assign('copyright', require(__DIR__.'/data/copyright.php'));
+		$smarty->assign('shop2_cart', require(__DIR__.'/data/shop2_cart.php'));
+		$smarty->assign('folders_shared', require(__DIR__.'/data/folders_shared.php'));
+		$smarty->assign('text', require(__DIR__.'/data/text.php'));
+		$smarty->assign('page', require(__DIR__.'/data/page.php'));
+		$smarty->assign('site', require(__DIR__.'/data/site.php'));
+		$smarty->assign('block1', require(__DIR__.'/data/block1.php'));
+		$smarty->assign('lastnews', require(__DIR__.'/data/lastnews.php'));
+		$smarty->assign('sidevote', require(__DIR__.'/data/sidevote.php'));
+	}
 
 	$smarty->display('db:' . $smarty->options['FILENAME']);
 
