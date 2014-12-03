@@ -1,4 +1,5 @@
 var lib = require('../lib');
+var Sass = require('../lib').Sass;
 var path = require('path');
 var url = require('url');
 var _ = require('lodash');
@@ -28,7 +29,8 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 			watcher.close();
 		}
 
-		lib.cache.sass.add(dir);
+		Sass.clearCacheSite();
+		Sass.addToCache(dir);
 
 		watcher = chokidar.watch(dir, {
 			ignored: /[\/\\]\./,
@@ -49,9 +51,9 @@ app.all(/^.+\.(html|tpl)(\?.*)?$/, function (req, res) {
 				if (/\.scss$/.test(filepath)) {
 
 					if (event == 'unlink') {
-						lib.cache.sass.remove(filepath);
+						Sass.removeFromCache(filepath);
 					} else {
-						lib.cache.sass.add(filepath);
+						Sass.addToCache(filepath);
 					}
 
 					reload('css');

@@ -1,6 +1,6 @@
 var bodyParser = require('body-parser');
 var fs = require('fs-extra');
-var lib = require('../lib');
+var Sass = require('../lib').Sass;
 var path = require('path');
 
 
@@ -17,6 +17,6 @@ app.io.listen(3001);
 
 
 fs.removeSync(CACHE_DIR);
-lib.cache.sass.add(STATIC_DIR);
+Sass.addToCache(STATIC_DIR);
 fs.ensureDirSync(path.join(CACHE_DIR, 'templates_c'));
 fs.ensureDirSync(WORK_DIR);
