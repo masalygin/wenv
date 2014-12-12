@@ -1,69 +1,28 @@
-{literal}
-	<h1>Заказ</h1>
+{if $step == 'delivery'}
 
-	<script type="text/javascript">
-		shop2.on('afterCartAddItem', function(d, status) { // срабатывает когда сервер ответил на попытку добавления товара в корзину
+	{assign var="h1" value="SHOP2_DELIVERY2"}
+	{include file="global:shop2.v2-order-errors.tpl"}
+	{include file="global:shop2.v2-order-delivery.tpl"}
+	<p><a href="{$shop2.uri}?mode=cart" class="shop2-btn shop2-btn-back">{#SITE_BACK#}</a></p>
 
-			if (!d.errstr) { // если ошибок нет
-				
-				var html = '<div class="shop2-alert-header">Товар добавлен в корзину</div>' +
-					'<div class="shop2-alert-buttons">' +
-					'<a class="shop2-btn" href="' + shop2.uri + '/cart">Оформить заказ</a>' +
-					'<a class="shop2-alert-close" onclick="shop2.alert.hide(); return false;" href="#">Продолжить покупки</a>' +
-					'</div>';
+{elseif $step == 'order'}
 
-				shop2.alert(html, '', 'shop2-alert-cart')
-			}
-		});
-	</script>
-			
-	<form action="/?mode=order&amp;step=delivery" method="post" class="shop2-order-options shop2-delivery">
-		<input name="action" value="save" type="hidden">
-		<div class="options-list">
-												
-			<div class="option-type active-type">
-				<label class="option-label">
-					<input name="delivery_id" autocomplete="off" checked="checked" value="641421" type="radio"><span>
-						Курьер - бесплатно (срок доставки)</span>
-				</label>
-							<div class="option-details">
-															<div class="option-item">
-							<label>
-								<span>Адрес доставки:</span>
-								<textarea name="641421[address]" cols="50" rows="5"></textarea>
-							</label>
-						</div>
-																				<div class="option-item">
-							<label>
-								<span>Дата и время доставки:</span>
-								<input name="641421[datetime]" size="30" value="" type="text">
-							</label>
-						</div>
-																				<div class="option-item">
-							<label>
-								<span>Телефон:</span>
-								<input name="641421[phone]" size="30" value="" type="text">
-							</label>
-						</div>
-										
-								</div>
-						</div>
-							
-			<div class="option-type ">
-				<label class="option-label">
-					<input name="delivery_id" autocomplete="off" value="641021" type="radio"><span>
-						Самовывоз
-						
-												
-																- бесплатно							
-												
-						
-										</span>
-				</label>
-						</div>
-				</div>
-		<div class="text-center">
-			<button class="shop2-btn" type="submit">Оформить заказ</button>
-		</div>
-	</form><!-- Delivery -->			<p><a href="/magazin?mode=cart" class="shop2-btn shop2-btn-back">Назад</a></p>
-{/literal}
+	{assign var="h1" value="SHOP2_RESERVATION"}
+	{include file="global:shop2.v2-order-errors.tpl"}
+	{include file="global:shop2.v2-order-order.tpl"}
+	<p><a href="{if !empty($pre_order.delivery)}{$shop2.uri}?mode=order&amp;step=delivery&amp;action=edit{else}{$shop2.uri}?mode=cart{/if}" class="shop2-btn shop2-btn-back">{#SITE_BACK#}</a></p>
+
+
+{elseif $step == 'payment'}
+
+	{assign var="h1" value="SHOP2_ORDER_THANK"}
+	{include file="global:shop2.v2-order-payment.tpl"}
+
+{elseif $step == 'payments'}
+
+	{assign var="h1" value="SHOP2_PAYMENTS"}
+	{include file="global:shop2.v2-order-errors.tpl"}
+	{include file="global:shop2.v2-order-payments.tpl"}
+	<p><a href="{$shop2.uri}?mode=order&amp;step=order&amp;action=edit" class="shop2-btn shop2-btn-back">{#SITE_BACK#}</a></p>
+
+{/if}

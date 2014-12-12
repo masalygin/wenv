@@ -1,250 +1,192 @@
-{literal}
-	<h1>Корзина</h1>
+{assign var="hide_auth_form" value=$shop2.json.hide_auth_form}
 
-	<p>Корзина пуста <a class="shop2-btn" href="{$shop2.uri}">Перейти на главную магазина</a></p>
+{if !$cart.cart}
+	<p>{#SHOP2_CART_IS_EMPTY#} <a class="shop2-btn" href="{$shop2.uri}">{#SHOP2_GO_MAIN#}</a></p>
+{else}
 
-	<div class="shop2-warning">
-		<h2>Нимиальная сумма заказа - OVER9000 юаней</h2>
-	</div>
+	{if $cart.totals.total < $shop2.json.order_min_cost}
+		<div class="shop2-warning">
+			<h2>{#SHOP2_MINIMUM_ORDER_AMOUNT#} - {$shop2.json.order_min_cost|price_convert} {$shop2.currency_shortname}</h2>
+		</div>
+	{/if}
 
 	<form action="{$shop2.uri}?mode=cart&action=up" id="shop2-cart">
 		<p class="text-right">
-			<a href="{$shop2.uri}?mode=cart&action=cleanup" class="shop2-btn">Очистить корзину</a>
+			<a href="{$shop2.uri}?mode=cart&action=cleanup" class="shop2-btn">{#SHOP2_CLEAR_CART#}</a>
 		</p>
 		<table class="shop2-cart-table">
 			<tr>
-				<th>Товар</th>
-				<th>Цена, руб.</th>
-				<th>Кол-во</th>
-				<th>Сумма, руб.</th>
+				<th>{#SHOP2_PRODUCT#}</th>
+				<th>{#SHOP2_PRICE#}, {$currency.currency_shortname}</th>
+				<th>{#SHOP2_QTY#}</th>
+				<th>{#SHOP2_SUM#}, {$currency.currency_shortname}</th>
 				<th>&nbsp;</th>
 			</tr>
-			<tr>
-				<td class="cart-product">
-					<div class="cart-product-image">
-						<a href="files/products/1_1_0.jpg" class="highslide">
-							<img src="files/products/1_1_0.jpg" height="90" width="90" alt="">
-						</a>
-						<div class="verticalMiddle"></div>
-					</div>
-					<div class="cart-product-details">
-						<div class="cart-product-name"><a href="?mode=product">Примерный товар номер #1</a></div>
-						<div class="cart-product-article"><span>Артикул:</span> 010</div>
-						<div class="cart-product-action"><strong>Акция:</strong> Товарная скидка 5%</div>
-
-						<ul class="cart-product-param">
-							<li>
-								<div class="param-title">Text:</div>
-								<div class="param-value">текст 1,1 шт</div>
-							</li>
-							<li>
-								<div class="param-title">Int:</div>
-								<div class="param-value">1 mm</div>
-							</li>
-							<li>
-								<div class="param-title">Float:</div>
-								<div class="param-value">1.5 cm</div>
-							</li>
-							<li>
-								<div class="param-title">Checkbox:</div>
-								<div class="param-value">да</div>
-							</li>
-							<li>
-								<div class="param-title">Color:</div>
-								<div class="param-value">
-									<ul class="shop2-color-pick">
-										<li class="active-color"><span style="background-color: #ccff00;">&nbsp;</span></li>
-									</ul>
-								</div>
-							</li>
-							<li>
-								<div class="param-title">Textarea:</div>
-								<div class="param-value">текст 1,2 </div>
-							</li>
-							<li>
-								<div class="param-title">Select:</div>
-								<div class="param-value">вариант 1</div>
-							</li>
-							<li>
-								<div class="param-title">Multiselect:</div>
-								<div class="param-value">вариант 1,1, вариант 1,3</div>
-							</li>
-							<li>
-								<div class="param-title">Image:</div>
-								<div class="param-value">
-									<a class="highslide" href="files/products/1_1_0.jpg">
-										<img src="files/products/1_1_0.jpg" width="90" height="90">
-									</a>
-								</div>
-							</li>
-							<li>
-								<div class="param-title">File:</div>
-								<div class="param-value">
-									<a href="/d/442666/d/document_1.docx"><span class="icon"></span> Скачать</a>
-								</div>
-							</li>
-							<li>
-								<div class="param-title">Выбор цвета:</div>
-								<div class="param-value">
-									<ul class="shop2-color-ext-list">
-										<li style="background-image: url(files/products/2_1_0.jpg); background-size: 24px 24px;" class="shop2-color-ext-selected">
-											<div><img src="files/products/2_1_0.jpg" width="96" height="96" alt="">Красный</div>
-										</li>
-									</ul>
-								</div>
-							</li>
-							<li>
-								<div class="param-title">Справочник цветов :</div>
-								<div class="param-value">
-									<ul class="shop2-color-ext-list">
-										<li style="background-image: url(files/products/9_1_0.jpg); background-size: 24px 24px;" class="shop2-color-ext-selected">
-											<div><img src="files/products/9_1_0.jpg" width="96" height="96" alt="">Серый</div>
-										</li>
-									</ul>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</td>
-				<td class="cart-price">
-					500
-				</td>
-				<td class="cart-amount">
-					<div class="shop2-product-amount">
-						<button type="button" class="shop2-btn amount-minus">−</button>
-							<input data-max="5426" data-kind="221746221" name="amounts[221746221]" type="text" maxlength="4" value="1">
-						<button type="button" class="shop2-btn amount-plus">+</button>
-					</div>
-				</td>
-				<td class="cart-price">
-					500
-				</td>
-				<td class="cart-delete">
-					<a title="Удалить" href="/magazin?mode=cart&amp;action=del&amp;kind_id=221746221" data-id="221746221"><img src="/g/shop2v2/default/images/delete-cart-product.png" height="15" width="15" alt=""></a>
-				</td>
-			</tr> 
-			<tr>
-				<td class="cart-product">
-					<div class="cart-product-image">
-						<a class="highslide" href="files/products/2_1_0.jpg">
-							<img src="files/products/2_1_0.jpg" width="90" height="90" alt="">
-						</a>
-						<div class="verticalMiddle"></div>
-					</div>
-					<div class="cart-product-details">
-						<div class="cart-product-action"><strong>Подарок</strong></div>
-						<div class="cart-product-name"><a href="/shop/product/primernyy-tovar-nomer-2">Примерный товар номер #2</a></div>
-						<div class="cart-product-article"><span>Артикул:</span> нет</div>
-
-						<ul class="cart-product-param">
-
-						</ul>
-					</div>
-				</td>
-				<td class="cart-price">
-					0.00
-				</td>
-				<td class="cart-amount">
-					1
-				</td>
-				<td class="cart-price">0</td>
-				<td>&nbsp;</td>
-			</tr>          
+			{foreach from=$cart.cart item=e key=k}
+				{include file="global:shop2.v2-cart-product.tpl"}
+			{/foreach}
+			{foreach from=$cart.gifts item=e key=k}
+				{include file="global:shop2.v2-cart-product.tpl" gift=1}
+			{/foreach}
 		</table>
-		<p class="text-right shop2-cart-update show">
-			<a href="#" class="shop2-btn shop2-cart-update">Пересчитать</a>
+		<p class="text-right shop2-cart-update">
+			<a href="#" class="shop2-btn shop2-cart-update">{#SHOP2_RECALCULATE#}</a>
 		</p>
-
 		<table class="shop2-cart-total">
 			<tr>
 				<td>&nbsp;</td>
-				<th>Сумма:</th>
-				<td>19104.50 руб.</td>
+				<th>{#SHOP2_SUM#}:</th>
+				<td>{$cart.totals.discount_subtotal|price_convert} {$currency.currency_shortname}</td>
 			</tr>
+
+			{assign var="cpn" value=""}
+			{capture assign="dsc"}{strip}
+				{foreach from=$cart.details item=e name=foo}
+					{assign var="discount" value=$discounts[$e.discount_id]}
+					{if !$discount.is_coupon}
+						{$discount.discount_descr}
+					{else}
+						{assign var="cpn" value=$cpn|cat:$discount.discount_descr}
+					{/if}
+				{/foreach}
+			{/strip}{/capture}
+
+			{if $cart.totals.sum_discount_order}
+				<tr>
+					<td>&nbsp;</td>
+					<th>{strip}
+						
+						{if $dsc}
+							<span class="question">
+								<img src="/g/shop2v2/default/images/question-price.png" alt="" /> {#SHOP2_DISCOUNT2#}:    
+							</span>
+							<div class="shop2-product-discount-desc">
+								{$dsc}
+							</div>
+						{else}
+							{#SHOP2_DISCOUNT2#}:
+						{/if}
+
+					{/strip}</th>
+					<td>{$cart.totals.sum_discount_order|price_convert} {$currency.currency_shortname}</td>
+				</tr>
+			{/if}
+
+			{if ($has_coupons || $coupons) && $cart.totals.total > 0}
+				<tr>
+					<td>
+						<div class="shop2-coupon">
+							<div class="coupon-body">
+								<label class="coupon-label" for="coupon">{#SHOP2_CUPON#}:</label>
+								<button class="coupon-btn shop2-btn">{#SHOP2_APPLY#}</button>
+								<label class="coupon-field">
+									<input type="text" id="coupon" value="" />
+								</label>
+							</div>
+							<div class="coupon-arrow"></div>
+
+							{if $coupons}
+							<div class="coupon-id">
+								{if $coupons}
+								<span>{#SHOP2_USED#}:</span>
+									{foreach from=$coupons key=k item=e}
+										<span class="coupon-code {if $e<=0} error{/if}">{$k|escape} {if $e<=0}({#SHOP2_WRONG#}){/if}</span>
+										<a href="#" data-code="{$k|escape}" class="coupon-delete">&nbsp;</a>
+									{/foreach}
+								{/if}
+							</div>
+							{/if}
+
+						</div>
+					</td>
+					<th>{strip}
+
+						{if $cpn}
+							<span class="question">
+								<img src="/g/shop2v2/default/images/question-price.png" alt="" /> {#SHOP2_COUPON_DISCOUNT#}:    
+							</span>
+							<div class="shop2-product-discount-desc">
+								{$cpn}
+							</div>
+						{else}
+							{#SHOP2_COUPON_DISCOUNT#}:
+						{/if}
+
+					{/strip}</th>
+					<td>{$cart.totals.sum_discount_coupon|price_convert} {$currency.currency_shortname}</td>
+				</tr>
+			{/if}
+
+
+			{if $cart.tax.name}
+				<tr>
+					<td>&nbsp;</td>
+					<th>{#SHOP2_INCLUDING_VAT#|sprintf:$cart.tax.name} {$cart.tax.percent}%:</th>
+					<td>{$cart.tax.value|price_convert} {$currency.currency_shortname}</td>
+				</tr>
+			{/if}
+
 
 			<tr>
 				<td>&nbsp;</td>
-				<th>
-					<span class="question">
-						<img src="/g/shop2v2/default/images/question-price.png" alt=""> Скидка:</span>
-						<div style="display: none; top: 1087.87px; left: 931px;" class="shop2-product-discount-desc">
-							<p>описание скидка на заказ</p>
-						</div>
-					</th>
-				<td>1910.45 руб.</td>
-			</tr>
-
-			<tr>
-				<td>
-					<div class="shop2-coupon">
-						<div class="coupon-body">
-							<label class="coupon-label" for="coupon">Купон:</label>
-							<button class="coupon-btn shop2-btn">Применить</button>
-							<label class="coupon-field">
-								<input id="coupon" value="" type="text">
-							</label>
-						</div>
-						<div class="coupon-arrow"></div>
-
-						<div class="coupon-id">
-							<span>Использованные:</span>
-							<span class="coupon-code ">123 </span>
-							<a href="#" data-code="123" class="coupon-delete">&nbsp;</a>
-						</div>
-					</div>
-				</td>
-				<th>
-					<span class="question">
-					<img src="/g/shop2v2/default/images/question-price.png" alt=""> Скидка с купона:</span>
-					<div style="display: none; top: 1128.87px; left: 871px;" class="shop2-product-discount-desc"><p>Описание купона</p></div>
-				</th>
-				<td>500.00 руб.</td>
-			</tr>
-
-			<tr>
-				<td>&nbsp;</td>
-				<th>В том числе НДС 20%:</th>
-				<td>2782.34 руб.</td>
-			</tr>
-
-			<tr>
-				<td>&nbsp;</td>
-				<th>Итого:</th>
-				<td>16694.05 руб.</td>
+				<th>{#SHOP2_TOTAL#}:</th>
+				<td>{$cart.totals.total|price_convert} {$currency.currency_shortname}</td>
 			</tr>
 		</table>
+		
 	</form><!-- Cart -->
+
+	{*if $cart.details|@count}
+		<div class="shop2-discounts-desc">
+			<div class="block-title">{#SHOP2_ORDER_APPLY_DISCOUNT#}:</div>
+			{foreach from=$cart.details item=e name=foo}
+				{assign var="discount" value=$discounts[$e.discount_id]}
+				<div class="discount-name">{$discount.discount_name}</div>
+				{if $discount.discount_descr}
+					<div class="discount-desc">{$discount.discount_descr}</div>
+				{/if}
+			{/foreach}
+		</div><!-- Discounts -->
+	{/if*}
 
 	<div class="shop2-clear-container"></div>
 
+	{if !isset($user.user_id) && !$hide_auth_form}
 	<div class="shop2-cart-registration">
-		<h2>Оформить заказ</h2>
+		<h2>{#SHOP2_CHECKOUT#}</h2>
 		<table class="table-registration">
-			<tbody><tr>
+			<tr>
 				<td class="cell-l">
-					<form method="post" action="/user" class="form-registration">
-						<input type="hidden" name="mode" value="login">
+					<form method="post" action="{$user_settings.link}" class="form-registration">
+						<input type="hidden" name="mode" value="login" />
 						<div>
-							<label for="reg-login">Логин:</label>
+							<label for="reg-login">{#SHOP2_LOGIN#}:</label>
 							<label class="registration-field">
-								<input type="text" id="reg-login" value="" name="login">
+								<input type="text" id="reg-login" value="" name="login" />
 							</label>
 						</div>
 						<div>
-							<label for="reg-password">Пароль:</label>
+							<label for="reg-password">{#SHOP2_PASSWORD#}:</label>
 							<label class="registration-field">
-								<input type="password" id="reg-password" value="" name="password">
+								<input type="password" id="reg-password" value="" name="password" />
 							</label>
 						</div>
-						<button class="shop2-btn" type="submit">Войти и оформить заказ</button>
+						<button class="shop2-btn" type="submit">{#SHOP2_LOG_IN_PLACE_ORDER#}</button>
 					</form>
 				</td>
 				<td class="cell-r">
-					<p>Для получения персональных и сезонных  скидок, а также уникальных предложений предлагаем Вам пройти несложную процедуру <a href="/user/register">регистрации в магазине</a></p>
-					<p><a href="/shop?mode=order" class="shop2-btn">Купить без регистрации</a></p>
+					<p>{#SHOP2_FOR_DISCOUNTS_REGISTER1#} <a href="{get_seo_url mode=register uri_prefix=$user_settings.link}">{#SHOP2_FOR_DISCOUNTS_REGISTER2#}</a></p>
+					<p><a href="{$shop2.uri}?mode=order" class="shop2-btn">{#SHOP2_BUY_WITHOUT_REGISTRATION#}</a></p>
 				</td>
 			</tr>
-		</tbody></table>
-	</div>
-	<p class="text-center"><a href="{$shop2.uri}?mode=order" class="shop2-btn">Оформить заказ</a></p>
-{/literal}
+		</table>
+	</div><!-- Cart Registration -->
+	{/if}
+
+	{$shop2.json.order_note}
+
+	{if $hide_auth_form || isset($user.user_id)}
+		<p class="text-center"><a href="{$shop2.uri}?mode=order" class="shop2-btn">{#SHOP2_CHECKOUT#}</a></p>
+	{/if}
+
+{/if}

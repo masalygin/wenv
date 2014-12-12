@@ -53,16 +53,11 @@
 		$replace = '{ldelim}tpl.body{rdelim}';
 		switch ($_GET['mode']) {
 			case 'cart':
-				$replace = '{include file="global:cart.tpl"}';
-				break;
 			case 'folder':
-				$replace = '{include file="global:folder.tpl"}';
-				break;
 			case 'product':
-				$replace = '{include file="global:product.tpl"}';
-				break;
 			case 'order':
-				$replace = '{include file="global:order.tpl"}';
+			case 'main':
+				$replace = "{include file='global:{$_GET['mode']}.tpl'}";
 				break;
 		}
 		$tpl_source = str_replace('{tpl.body}', $replace, $tpl_source);
@@ -72,30 +67,49 @@
 	$smarty->register_resource('db', array('db_template', 'timestamp', 'secure', 'trusted'));
 	$smarty->register_resource('global', array('global_template', 'timestamp', 'secure', 'trusted'));
 	$smarty->register_prefilter('prefilter');
+	$smarty->config_load(__DIR__.'/localization.conf');
 
 	$data = array();
 
 	if ($smarty->options['SMARTY_DATA_FILE']) {
 		$data = require($smarty->options['SMARTY_DATA_FILE']);
 	} else {
-		$data['common_js'] = require(__DIR__.'/data/common_js.php');
-		$data['common_js'] = require(__DIR__.'/data/common_js.php');
-		$data['menu'] = require(__DIR__.'/data/menu.php');
-		$data['menu2'] = require(__DIR__.'/data/menu2.php');
-		$data['copyright'] = require(__DIR__.'/data/copyright.php');
-		$data['shop2_cart'] = require(__DIR__.'/data/shop2_cart.php');
-		$data['folders_shared'] = require(__DIR__.'/data/folders_shared.php');
-		$data['text'] = require(__DIR__.'/data/text.php');
-		$data['page'] = require(__DIR__.'/data/page.php');
-		$data['site'] = require(__DIR__.'/data/site.php');
-		$data['block1'] = require(__DIR__.'/data/block1.php');
-		$data['lastnews'] = require(__DIR__.'/data/lastnews.php');
-		$data['sidevote'] = require(__DIR__.'/data/sidevote.php');
+
+		switch ($_GET['mode']) {
+			case 'cart':
+			case 'folder':
+			case 'product':
+			case 'order':
+			case 'main':
+				$data = require(__DIR__."/data/page.{$_GET['mode']}.php");
+				break;
+			default:
+				$data['common_js'] = require(__DIR__.'/data/common_js.php');
+				$data['menu'] = require(__DIR__.'/data/menu.php');
+				$data['menu2'] = require(__DIR__.'/data/menu2.php');
+				$data['copyright'] = require(__DIR__.'/data/copyright.php');
+				$data['shop2_cart'] = require(__DIR__.'/data/shop2_cart.php');
+				$data['folders_shared'] = require(__DIR__.'/data/folders_shared.php');
+				$data['text'] = require(__DIR__.'/data/text.php');
+				$data['page'] = require(__DIR__.'/data/page.php');
+				$data['site'] = require(__DIR__.'/data/site.php');
+				$data['block1'] = require(__DIR__.'/data/block1.php');
+				$data['lastnews'] = require(__DIR__.'/data/lastnews.php');
+				$data['sidevote'] = require(__DIR__.'/data/sidevote.php');
+				$data['tel'] = require(__DIR__.'/data/tel.php');
+				$data['tel2'] = require(__DIR__.'/data/tel.php');
+				$data['activity'] = require(__DIR__.'/data/activity.php');
+				$data['address'] = require(__DIR__.'/data/address.php');
+				$data['address2'] = require(__DIR__.'/data/address.php');
+				$data['counters'] = require(__DIR__.'/data/counters.php');
+				$data['social_networks'] = require(__DIR__.'/data/social_networks.php');
+				break;
+		}
 	}
 
 	$data = array_replace_recursive($data, $smarty->options['DATA']);
-	$smarty->assign($data);
-
-	$smarty->display('db:' . $smarty->options['FILENAME']);
 	
+	$smarty->assign($data);
+	$smarty->display('db:' . $smarty->options['FILENAME']);
+
 ?>

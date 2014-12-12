@@ -1,7 +1,79 @@
-{literal}
-	<link rel="stylesheet" href="/g/shop2v2/default/css/theme.less.css">
-	<script src="/g/shop2v2/default/js/shop2.2.js"></script>
-	<script src="/g/shop2v2/default/js/tpl.js"></script>
-	<script type="text/javascript">shop2.init({"productRefs": {"329393421":{"Text":{"\u0442\u0435\u043a\u0441\u0442 1,1":["405841621"],"2,1":["405907821"],"\u0442\u0435\u043a\u0441\u0442 3,1":["405912421"]},"Int":{"1":["405841621"],"2":["405907821"],"3":["405912421"]},"Float":{"1.5":["405841621"],"2.5":["405907821"],"3.5":["405912421"]},"Checkbox":{"1":["405841621","405912421"]},"Color":{"#ccff00":["405841621"],"#009900":["405907821"],"#03f":["405912421"]},"Textarea":{"bf8379d553d903537ca21511dbae3070":["405841621"],"4be9e387847937c9322e8521d86fe2f1":["405907821"],"4561fff53184b137480dc91dc6bc4536":["405912421"]},"Select":{"325855621":["405841621"],"325855821":["405907821"],"325856021":["405912421"]},"Multiselect":{"325856221":["405841621"],"325856421":["405907821","405912421"]},"Image":{"1600854621":["405841621"],"1600855221":["405907821"]},"File":{"73609821":["405841621"]},"vybor_cveta":{"697c1c6d8fcf5d065fa153f43504f500":["405841621"],"2ea42ca977968a6620ea9887b135a74e":["405907821"],"10a7cfcf915c4c9a839ab0834db8aed2":["405912421"]},"spravochnik_cvetov":{"694909821":["405841621"],"694910021":["405907821"],"694910221":["405912421"]}}},"apiHash": {"getProductListItem":"905f6c195d55bb0b2a3441d7aeb41761","cartAddItem":"93a6853e76ed64d4adbd89de9e59e877","getFolderCustomFields":"7c76b06a89369efea3be97a799a1e166","getSearchMatches":"4264aed8c7856868bae47137699b89bb","print":"3d38255f29ffbc9c0a9f3ac678488521","printOrder":"ca0100aa490b468da812c104e8715e0c","compare":"5e0c611a6d649af52f95d8fa0e94dab2"},"verId": 442666,"mode": "main","step": "","uri": "/shop","IMAGES_DIR": "/d/442666/d/","my": {"list_picture_enlarge":true,"accessory":"\u0410\u043a\u0441\u0441\u0435\u0441\u0441\u0443\u0430\u0440\u044b","kit":"\u041d\u0430\u0431\u043e\u0440","recommend":"\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u043c\u044b\u0435","similar":"\u041f\u043e\u0445\u043e\u0436\u0438\u0435","modification":"\u041c\u043e\u0434\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u0438"}});</script>
-	<style type="text/css">.product-item-thumb {width: 180px;}.product-item-thumb .product-image, .product-item-simple .product-image {height: 190px; width: 180px;}.product-item-thumb .product-amount .amount-title {width: 84px;}.product-item-thumb .product-price {width: 130px;}.shop2-product .product-side-l {width: 200px;}.shop2-product .product-image {height: 190px; width: 200px;}.shop-product .product-thumbnails li {width: 50px;height: 50px;}</style>
-{/literal}
+{assign var="css" value=$css|default:"default"}
+{assign var="js" value=$js|default:"default"}
+
+{if $cookie}
+	<script type='text/javascript' src='/shared/s3/js/cookie.js'></script>
+{/if}
+
+{if $jquery}
+	<script type="text/javascript" src="/g/libs/jquery/1.10.2/jquery.min.js"></script>
+{/if}
+
+{if $reset}
+	<link rel="stylesheet" type="text/css" href="/g/shop2v2/default/css/reset.less.css">
+{/if}
+
+{if $shop2_local_css}
+	<link rel="stylesheet" type="text/css" href="images/css/theme.less.css">
+{else}
+	{if $css!="none"}<link rel="stylesheet" type="text/css" href="/g/shop2v2/{$css}/css/theme.less.css">{/if}
+{/if}
+<script type="text/javascript" src="/g/printme.js"></script>
+<script type="text/javascript" src="/g/shop2v2/default/js/tpl.js"></script>
+<script type="text/javascript" src="/g/shop2v2/default/js/baron.min.js"></script>
+<script type="text/javascript" src="/g/shop2v2/{$js}/js/shop2.2.js"></script>
+{strip}
+<script type="text/javascript">
+	shop2.init({ldelim}
+		"productRefs": {json array=$product_refs},
+		"apiHash": {json array=$api|default:$shop2.api},
+		"verId": {$site.ver_id},
+		"mode": "{$mode}",
+		"step": "{$step}",
+		"uri": "{$shop2.uri}",
+		"IMAGES_DIR": "{$IMAGES_DIR}",
+		"my": {$shop2.my|@json_encode}
+	{rdelim});
+	{if $folder}shop2.filter._pre_params = "&s[folder_id]={$folder.folder_id}";{/if}
+	{if $vendor}shop2.filter._pre_params = "&s[vendor_id]={$vendor.vendor_id}";{/if}
+</script>
+
+	{if $shop2.thumb_width != 200 || $shop2.thumb_height != 190 || $shop2.card_image_width != 200 || $shop2.card_image_height != 190}
+		{"\n"}
+		<style type="text/css">
+			.product-item-thumb {ldelim}
+				width: {$shop2.thumb_width}px;
+			{rdelim}
+
+			.product-item-thumb .product-image, .product-item-simple .product-image {ldelim}
+				height: {$shop2.thumb_height}px;
+				width: {$shop2.thumb_width}px;
+			{rdelim}
+
+			.product-item-thumb .product-amount .amount-title {ldelim}
+				width: {$shop2.thumb_width-96}px;
+			{rdelim}
+
+			.product-item-thumb .product-price {ldelim}
+				width: {$shop2.thumb_width-50}px;
+			{rdelim}
+
+			.shop2-product .product-side-l {ldelim}
+				width: {$shop2.card_image_width}px;
+			{rdelim}
+
+			.shop2-product .product-image {ldelim}
+				height: {$shop2.card_image_height}px;
+				width: {$shop2.card_image_width}px;
+			{rdelim}
+
+			{assign var="width" value=$shop2.card_image_width/3|string_format:"%d"}
+			{assign var="width" value=$width-10}
+			.shop2-product .product-thumbnails li {ldelim}
+				width: {$width}px;
+				height: {$width}px;
+			{rdelim}
+		</style>
+	{/if}
+
+{/strip}
