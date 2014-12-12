@@ -8,13 +8,14 @@ var fs = require('fs-extra');
 
 require('./lib/server-response');
 
+require('./lib/find-php');
 
 global.WORK_DIR =  path.resolve(__dirname, '../www');
 global.CACHE_DIR = path.join(__dirname, 'cache');
 global.SASS_DIR = path.join(__dirname, 'resources/sass');
 global.STATIC_DIR = path.join(__dirname, 'resources/static');
 global.TEMPLATES_DIR = path.join(__dirname, 'resources/templates');
-global.SMARTY_COMMAND = path.join(__dirname, 'Smarty/index.php');
+global.SMARTY_INDEX = path.join(__dirname, 'Smarty/index.php');
 global.PORT = process.env.PORT || 3000;
 global.IP = ip.address();
 
