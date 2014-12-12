@@ -6,10 +6,6 @@ var Sass = require('./lib/sass');
 var fs = require('fs-extra');
 
 
-require('./lib/server-response');
-
-require('./lib/find-php');
-
 global.WORK_DIR =  path.resolve(__dirname, '../www');
 global.CACHE_DIR = path.join(__dirname, 'cache');
 global.SASS_DIR = path.join(__dirname, 'resources/sass');
@@ -19,6 +15,9 @@ global.SMARTY_INDEX = path.join(__dirname, 'Smarty/index.php');
 global.PORT = process.env.PORT || 3000;
 global.IP = ip.address();
 
+
+require('./lib/find-php');
+require('./lib/server-response');
 
 global.app = express();
 app.use(require('static-favicon')());
