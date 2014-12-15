@@ -4,6 +4,7 @@ var ip = require('ip');
 var path = require('path');
 var Sass = require('./lib/sass');
 var fs = require('fs-extra');
+var ua = require('universal-analytics');
 
 
 global.WORK_DIR =  path.resolve(__dirname, '../www');
@@ -26,6 +27,8 @@ app.use(require('body-parser').json());
 app.use(require('body-parser').urlencoded());
 app.use(require('cookie-parser')());
 
+app.visitor = ua('UA-57663644-1');
+app.visitor.event('start', process.env.USERNAME + ': ' + IP).send();
 
 app.io = require('socket.io')(require('http').Server(app));
 app.io.listen(3001);
