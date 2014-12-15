@@ -21,7 +21,8 @@
     "request": "^2.48.0",
     "serve-index": "~1.5.0",
     "socket.io": "^1.2.0",
-    "static-favicon": "~1.0.0"
+    "static-favicon": "~1.0.0",
+    "universal-analytics": "^0.3.6"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
