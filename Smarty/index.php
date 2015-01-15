@@ -107,7 +107,10 @@
 		}
 	}
 
-	$data = array_replace_recursive($data, $smarty->options['DATA']);
+	if ($smarty->options['JSON_FILE']) {
+		$json = json_decode(file_get_contents($smarty->options['JSON_FILE']), true);
+		$data = array_replace_recursive($data, $json);
+	}
 	
 	$smarty->assign($data);
 	$smarty->display('db:' . $smarty->options['FILENAME']);
