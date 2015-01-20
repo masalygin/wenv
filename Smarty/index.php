@@ -112,7 +112,7 @@
 		$data = array_replace_recursive($data, $json);
 	}
 
-	if ($_GET['view']) {
+	if ($_GET['view'] && is_array($data['shop2'])) {
 		$data['shop2']['view'] = $_GET['view'];
 	}
 	
