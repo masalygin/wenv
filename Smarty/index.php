@@ -111,6 +111,10 @@
 		$json = json_decode(file_get_contents($smarty->options['JSON_FILE']), true);
 		$data = array_replace_recursive($data, $json);
 	}
+
+	if ($_GET['view']) {
+		$data['shop2']['view'] = $_GET['view'];
+	}
 	
 	$smarty->assign($data);
 	$smarty->display('db:' . $smarty->options['FILENAME']);
