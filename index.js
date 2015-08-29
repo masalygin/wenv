@@ -8,7 +8,7 @@ program
 
 
 program
-  .command('start')
+  .command('server')
   .option('-o, --open', 'Open in default browser')
   .option('-d, --dead', 'Disable livereload')
   .action(function (options) {
