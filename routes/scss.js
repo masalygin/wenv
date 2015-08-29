@@ -6,11 +6,15 @@ var dir = process.cwd();
 module.exports = route.all(/.+\.scss\.css(\?.*)?/, handler);
 
 
-function *handler() {
-  var file = path.join(dir, this.request.path).replace(/\.css$/, '');
-  var result = yield compileSass({file: file});
-  this.body = result.css;
-  this.type = 'text/css';
+function *handler(params, next) {
+  try {
+    var file = path.join(dir, this.request.path).replace(/\.css$/, '');
+    var result = yield compileSass({file: file});
+    this.body = result.css;
+    this.type = 'text/css';
+  } catch (err) {
+    yield next;
+  }
 }
 
 
