@@ -1,9 +1,9 @@
 #!/usr/bin/node --harmony
 
-program = require('commander');
-ip = require('ip').address();
-port = 3000;
-app = require('./app.js');
+var program = require('commander');
+var ip = require('ip').address();
+var port = 3000;
+var app = require('./app.js');
 
 
 program
@@ -14,7 +14,7 @@ program
 	.command('start')
 	.action(function() {
 		app.listen(port, ip, function() {
-			console.log("Server listening on http://#{ip}:#{port}");
+			console.log("Server listening on http://" + ip + ":" + port);
 		});
 	});
 

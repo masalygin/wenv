@@ -12,7 +12,8 @@ module.exports = app;
 //	scss: /.+\.scss\.css(\?.*)?/
 //	html: /.+\.(html|tpl)(\?.*)?/
 
-
+app.use(require('./routes/error'));
+app.use(require('./routes/scss'));
 app.use(require('./routes/html'));
 
 
