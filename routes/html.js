@@ -8,6 +8,6 @@ module.exports = route.all(/.+\.(html|tpl)(\?.*)?/, handler);
 
 
 function *handler() {
-	var file = path.join(dir, this.request.path);
-	this.body = yield fs.readFile(file, 'utf8');
+  var file = path.join(dir, this.request.path);
+  this.body = yield fs.readFile(file, 'utf8');
 }

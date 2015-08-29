@@ -7,16 +7,16 @@ var app = require('./app.js');
 
 
 program
-	.version('2.0.0');
+  .version('2.0.0');
 
 
 program
-	.command('start')
-	.action(function() {
-		app.listen(port, ip, function() {
-			console.log("Server listening on http://" + ip + ":" + port);
-		});
-	});
+  .command('start')
+  .action(function () {
+    app.listen(port, ip, function () {
+      console.log("Server listening on http://" + ip + ":" + port);
+    });
+  });
 
 
 program.parse(process.argv);
