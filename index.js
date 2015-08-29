@@ -9,9 +9,21 @@ program
 
 program
   .command('start')
-  .action(function () {
-    require('./server');
-    require('./lib/live');
+  .option('-o, --open', 'Open in default browser')
+  .option('-d, --dead', 'Disable livereload')
+  .action(function (options) {
+    var server = require('./server');
+
+    if (options.open) {
+      server.started.then(function(host) {
+        require('opener')(host);
+      });
+    }
+
+    if (!options.dead) {
+      require('./lib/live');
+    }
+
   });
 
 

@@ -13,9 +13,14 @@ app.use(require('./routes/static'));
 app.use(require('./routes/cache'));
 
 
-app.listen(port, ip, function () {
-  console.log("Server listening on http://" + ip + ":" + port);
+app.started = new Promise(function(resolve, reject) {
+  app.listen(port, ip, function () {
+    var host = "http://" + ip + ":" + port;
+    console.log("Server listening on " + host);
+    resolve(host);
+  });
 });
+
 
 io.listen(socketPort);
 
