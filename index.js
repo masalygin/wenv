@@ -12,7 +12,15 @@ program
   .command('server')
   .option('-o, --open', 'Open in default browser')
   .option('-d, --dead', 'Disable livereload')
+  .option('-l, --localhost', 'Local server')
+  .option('-p, --port <n>', 'Port', parseInt)
   .action(function (options) {
+    if (options.localhost) {
+      config.ip = 'localhost';
+    }
+    if (options.port) {
+      config.port = options.port;
+    }
     config.mode = 'server';
     config.open = !!options.open;
     config.live = !options.dead;
