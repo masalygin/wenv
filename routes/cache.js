@@ -1,39 +1,19 @@
 var send = require('koa-sendfile');
-var requiest = require('request');
-var fs = require('co-fs-extra');
-var url = require('url');
-var path = require('path');
+var cache = require('../lib/cache');
+
 
 module.exports = handler;
 
 
 function *handler(next) {
-  var file = yield fetch(this.request.path);
+  var file = cache.local(this.request.path);
+  yield* send.call(this, file);
+  if (this.status !== 404) {
+    return;
+  }
+  yield cache.fetch(this.request.path);
   yield* send.call(this, file);
   if (!this.status) {
-    yield next;
+    this.throw(404);
   }
-}
-
-
-function fetch(file) {
-  var uri = url.resolve('http://dumper.demojs0.oml.ru/', file);
-  return new Promise(function(resolve, reject) {
-    var stream = requiest.get(uri);
-    stream.on('error', reject);
-    stream.on('response', function(response) {
-      if (response.statusCode !== 200) {
-        reject(new Error('Not found: ' + uri));
-        this.abort();
-        return;
-      }
-      file = path.join(__dirname, '../cache', file);
-      fs.ensureDirSync(path.dirname(file));
-      var writeStream = fs.createWriteStream(file);
-      writeStream.on('finish', function() {
-        resolve(file);
-      });
-      this.pipe(writeStream);
-    });
-  });
 }
