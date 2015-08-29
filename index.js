@@ -21,6 +21,9 @@ program
     if (options.port) {
       config.port = options.port;
     }
+    if (options.dead) {
+      config.liveSnippet = '';
+    }
     config.mode = 'server';
     config.open = !!options.open;
     config.live = !options.dead;
