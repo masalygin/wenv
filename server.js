@@ -1,8 +1,5 @@
 var app = require('koa')();
-var io = require('socket.io')(app);
-var ip = require('ip').address();
-var port = 3000;
-var socketPort = 3001;
+var config = require('./lib/config');
 
 
 app.use(require('./routes/error'));
@@ -13,17 +10,20 @@ app.use(require('./routes/static'));
 app.use(require('./routes/cache'));
 
 
-app.started = new Promise(function(resolve, reject) {
-  app.listen(port, ip, function () {
-    var host = "http://" + ip + ":" + port;
-    console.log("Server listening on " + host);
-    resolve(host);
-  });
+app.listen(config.port, config.ip, function () {
+  var host = "http://" + config.ip + ":" + config.port;
+  console.log("Server listening on " + host);
+  if (config.open) {
+    require('opener')(host);
+  }
 });
 
 
-io.listen(socketPort);
+if (config.live) {
+  var io = require('socket.io')(app);
+  io.listen(config.socketPort);
+  app.io = io;
+}
 
-app.io = io;
 
 module.exports = app;

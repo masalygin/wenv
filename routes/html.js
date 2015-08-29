@@ -1,8 +1,9 @@
 var route = require('koa-route');
 var fs = require('co-fs-extra');
 var path = require('path');
+var config = require('../lib/config');
 var dir = process.cwd();
-var snippet = '\n\n\n<script src="/live.min.js"></script>';
+var snippet = config.live ? '\n\n\n\n\n<script src="/live.min.js"></script>' : '';
 
 
 module.exports = route.all(/.+\.(html|tpl)(\?.*)?/, handler);

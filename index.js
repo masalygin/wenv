@@ -1,6 +1,7 @@
 #!/usr/bin/node --harmony
 
 var program = require('commander');
+var config = require('./lib/config');
 
 
 program
@@ -12,15 +13,12 @@ program
   .option('-o, --open', 'Open in default browser')
   .option('-d, --dead', 'Disable livereload')
   .action(function (options) {
-    var server = require('./server');
+    config.mode = 'server';
+    config.open = !!options.open;
+    config.live = !options.dead;
 
-    if (options.open) {
-      server.started.then(function(host) {
-        require('opener')(host);
-      });
-    }
-
-    if (!options.dead) {
+    require('./server');
+    if (config.live) {
       require('./lib/live');
     }
 
