@@ -1,17 +1,24 @@
 var route = require('koa-route');
 var sass = require('node-sass');
 var path = require('path');
+var fs = require('co-fs-extra');
 var cache = require('../lib/cache');
 var dir = process.cwd();
 
-module.exports = route.all(/.+\.scss\.css(\?.*)?/, handler);
+
+module.exports = route.all(/.+\.scss\.css(?:\?.*)?/, handler);
 
 
-function *handler(params, next) {
+function *handler(next) {
   var file = path.join(dir, this.request.path).replace(/\.css$/, '');
-  var result = yield compileSass({file: file});
-  this.body = result.css;
-  this.type = 'text/css';
+  var exists = yield fs.exists(file);
+  if (exists) {
+    var result = yield compileSass({file: file});
+    this.body = result.css;
+    this.type = 'text/css';
+  } else {
+    yield next;
+  }
 }
 
 
