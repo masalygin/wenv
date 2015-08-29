@@ -1,8 +1,0 @@
-{
-  "workdir": "../www",
-  "cache": "cache",
-  "mixins": "resources/sass",
-  "static": "resources/static",
-  "templates": "resources/templates",
-  "smarty_index": "Smarty/index.php"
-}

@@ -1,7 +1,0 @@
-@function blend-multiply ($foreground, $background) {
-  $bm-red: red($background) * red($foreground) / 255;
-  $bm-green: green($background) * green($foreground) / 255;
-  $bm-blue: blue($background) * blue($foreground) / 255;
-
-  @return blend-normal(rgba($bm-red, $bm-green, $bm-blue, opacity($foreground)), $background);
-}

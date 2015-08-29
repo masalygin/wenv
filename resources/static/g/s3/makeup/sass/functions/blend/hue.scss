@@ -1,9 +1,0 @@
-@function blend-hue ($foreground, $background) {
-  $foreground-hsv: color-to-hsv($foreground);
-  $background-hsv: color-to-hsv($background);
-
-  $bm-hsv: nth($foreground-hsv, 1), nth($background-hsv, 2), nth($background-hsv, 3);
-  $bm-color: hsv-to-color($bm-hsv);
-
-  @return blend-normal(rgba(red($bm-color), green($bm-color), blue($bm-color), opacity($foreground)), $background);
-}

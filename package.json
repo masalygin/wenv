@@ -2,32 +2,16 @@
   "name": "wenv",
   "version": "0.0.1",
   "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
+  "bin": {
+    "wenv": "./index.coffee"
   },
   "dependencies": {
-    "body-parser": "~1.0.0",
-    "chalk": "^0.5.1",
-    "chokidar": "^0.11.1",
-    "cookie-parser": "~1.0.1",
-    "express": "~4.2.0",
-    "fs-extra": "^0.12.0",
-    "glob": "4.2.1",
-    "ip": "^0.3.2",
-    "lodash": "~2.4.1",
-    "morgan": "~1.0.0",
-    "node-notifier": "~4.0.2",
-    "node-sass": "^3.2.0",
-    "request": "^2.48.0",
-    "serve-index": "~1.5.0",
-    "socket.io": "^1.2.0",
-    "static-favicon": "~1.0.0",
-    "universal-analytics": "^0.3.6"
+    "co-fs-extra": "^1.1.0",
+    "commander": "^2.8.1",
+    "ip": "^0.3.3",
+    "koa": "^1.0.0",
+    "koa-route": "^2.4.2",
+    "node-sass": "^3.2.0"
   },
-  "devDependencies": {
-    "gulp": "^3.8.10",
-    "gulp-browserify": "^0.5.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-uglify": "^1.0.1"
-  }
+  "devDependencies": {}
 }

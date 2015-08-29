@@ -1,49 +1,36 @@
-var express = require('express');
-var http = require('http');
-var ip = require('ip');
+var koa = require('koa');
+var route = require('koa-route');
+var fs = require('co-fs-extra');
+var sass = require('node-sass');
+var app = koa();
+var dir = process.cwd();
 var path = require('path');
-var Sass = require('./lib/sass');
-var fs = require('fs-extra');
-var ua = require('universal-analytics');
 
-var config = fs.readJSONSync('./config.json');
+module.exports = app;
 
-global.WORK_DIR =  path.resolve(__dirname, config.workdir);
-global.CACHE_DIR = path.join(__dirname, config.cache);
-global.SASS_DIR = path.join(__dirname, config.mixins);
-global.STATIC_DIR = path.join(__dirname, config.static);
-global.TEMPLATES_DIR = path.join(__dirname, config.templates);
-global.SMARTY_INDEX = path.join(__dirname, config.smarty_index);
-global.PORT = process.env.PORT || 3000;
-global.IP = ip.address();
+//re =
+//	scss: /.+\.scss\.css(\?.*)?/
+//	html: /.+\.(html|tpl)(\?.*)?/
 
 
-require('./lib/find-php');
-require('./lib/server-response');
-
-global.app = express();
-app.use(require('static-favicon')());
-app.use(require('morgan')('dev'));
-app.use(require('body-parser').json());
-app.use(require('body-parser').urlencoded());
-app.use(require('cookie-parser')());
-
-app.visitor = ua('UA-57663644-1');
-app.visitor.event('start', process.env.USERNAME + ': ' + IP).send();
-
-app.io = require('socket.io')(require('http').Server(app));
-app.io.listen(3001);
+app.use(require('./routes/html'));
 
 
-fs.removeSync(CACHE_DIR);
-Sass.addToCache(STATIC_DIR);
-fs.ensureDirSync(path.join(CACHE_DIR, 'templates_c'));
-fs.ensureDirSync(WORK_DIR);
-
-
-require('./routes');
-
-
-http.createServer(app).listen(PORT, IP, function() {
-	console.log('Express server listening on http://' + IP + ':' + PORT);
-});
+//#app.use route.all re.scss, ()->
+//#	options =
+//#		file: path.join dir, @request.path
+//#	@body = yield compileSass options
+//#	yield []
+//#
+//#
+//#app.use route.get('/wenv', ()->
+//#	@body = '777'
+//#	yield []
+//#)
+//#
+//#
+//#compileSass = (options) ->
+//#	new Promise (resolve, reject)->
+//#		sass.render options, (err, data)->
+//#			return reject err if err
+//#			resolve data

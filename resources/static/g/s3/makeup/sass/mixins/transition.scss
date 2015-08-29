@@ -1,7 +1,0 @@
-@mixin transition ($transition) {
-    @if $experimental-support-for-webkit {-webkit-transition: $transition;}
-    @if $experimental-support-for-mozilla {-moz-transition: $transition;}
-    @if $experimental-support-for-opera {-o-transition: $transition;}
-    @if $experimental-support-for-microsoft {-ms-transition: $transition;}
-    transition: $transition;
-}
