@@ -5,5 +5,5 @@ module.exports = handler;
 
 
 function *handler() {
-  console.log(this.status);
+  console.log('a', this.status);
 }
