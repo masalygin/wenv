@@ -1,7 +1,9 @@
 @import "c";
+@import "global:/s3/makeup/sass/mixins/opacity.scss";
 
 b {
   color: red;
+  @include opacity(0.5);
 }
 
 h1 {
