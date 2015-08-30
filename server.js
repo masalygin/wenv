@@ -2,6 +2,7 @@ var app = require('koa')();
 var config = require('./lib/config');
 
 
+app.use(require('koa-body')());
 app.use(require('./routes/error'));
 app.use(require('./routes/index'));
 app.use(require('./routes/live'));

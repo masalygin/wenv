@@ -1,6 +1,6 @@
 {
   "name": "wenv",
-  "version": "0.0.1",
+  "version": "2.0.0",
   "private": true,
   "bin": {
     "wenv": "./index.js"
@@ -8,10 +8,13 @@
   "dependencies": {
     "chokidar": "^1.0.5",
     "co": "^4.6.0",
+    "co-exec": "^1.1.0",
     "co-fs-extra": "^1.1.0",
     "commander": "^2.8.1",
+    "cookie": "^0.2.0",
     "ip": "^0.3.3",
     "koa": "^1.0.0",
+    "koa-body": "^1.2.1",
     "koa-route": "^2.4.2",
     "koa-sendfile": "^1.1.1",
     "lodash": "^3.10.1",
