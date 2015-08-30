@@ -31,5 +31,5 @@ function *handler() {
   yield fs.outputJson(paramsFile, params);
   var body = yield exec(exe + ' ' + index + ' ' + dir);
   this.body = body + config.liveSnippet;
-  //yield fs.remove(paramsFile);
+  yield fs.remove(paramsFile);
 }
