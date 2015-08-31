@@ -5,10 +5,11 @@ var path = require('path');
 var cookie = require('cookie');
 var config = require('../lib/config');
 var php = require('../lib/php');
-var dir = process.cwd();
+var dir = path.join(process.cwd(), '/');
 var wenv = path.join(__dirname, '../');
 var index = path.join(wenv, '/Smarty/index.php');
-var template_c = path.join(wenv, '/.tmp/template_c');
+var template_c = path.join(wenv, '/.tmp/template_c/');
+var global = path.join(wenv, '/.tmp/global/');
 var paramsFile = path.join(dir, '.wenv.tmp');
 
 
@@ -16,10 +17,10 @@ module.exports = route.all(/.+\.(html|tpl)(\?.*)?/, handler);
 
 
 function *handler() {
-  var file = path.join(dir, this.request.path);
   var params = {
-    file: file,
+    file: this.request.path,
     dir: dir,
+    global: global,
     wenv: wenv,
     template_c: template_c,
     _GET: this.request.query,
