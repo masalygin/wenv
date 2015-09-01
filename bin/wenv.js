@@ -1,6 +1,6 @@
-#!/bin/sh
-":" //# comment; exec /usr/bin/env node --harmony "$0" "$@"
+#!/usr/bin/env node
 
+require('harmonize')();
 var program = require('commander');
 var config = require('../lib/config');
 var pkg = require('../package.json');
