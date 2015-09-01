@@ -3,10 +3,11 @@
 
 var program = require('commander');
 var config = require('../lib/config');
+var pkg = require('../package.json');
 
 
 program
-  .version('2.0.0');
+  .version(pkg.version);
 
 
 program
