@@ -1,7 +1,8 @@
-#!/usr/bin/node --harmony
+#!/bin/sh
+":" //# comment; exec /usr/bin/env node --harmony "$0" "$@"
 
 var program = require('commander');
-var config = require('./lib/config');
+var config = require('../lib/config');
 
 
 program
@@ -28,9 +29,9 @@ program
     config.open = !!options.open;
     config.live = !options.dead;
 
-    require('./server');
+    require('../server');
     if (config.live) {
-      require('./lib/live');
+      require('../lib/live');
     }
 
   });
