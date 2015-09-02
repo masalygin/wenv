@@ -1,11 +1,13 @@
-#!/usr/bin/node --harmony
+#!/usr/bin/env node
 
+require('harmonize')();
 var program = require('commander');
-var config = require('./lib/config');
+var config = require('../lib/config');
+var pkg = require('../package.json');
 
 
 program
-  .version('2.0.0');
+  .version(pkg.version);
 
 
 program
@@ -28,9 +30,9 @@ program
     config.open = !!options.open;
     config.live = !options.dead;
 
-    require('./server');
+    require('../server');
     if (config.live) {
-      require('./lib/live');
+      require('../lib/live');
     }
 
   });
