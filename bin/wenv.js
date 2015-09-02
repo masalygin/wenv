@@ -13,6 +13,7 @@ program
 program
   .command('server')
   .option('-o, --open', 'Open in default browser')
+  .option('-c, --csscomb', 'Use CSScomb')
   .option('-d, --dead', 'Disable livereload')
   .option('-l, --localhost', 'Local server')
   .option('-p, --port <n>', 'Port', parseInt)
@@ -25,6 +26,9 @@ program
     }
     if (options.dead) {
       config.liveSnippet = '';
+    }
+    if (options.csscomb) {
+      config.csscomb = true;
     }
     config.mode = 'server';
     config.open = !!options.open;
